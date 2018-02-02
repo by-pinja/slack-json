@@ -23,8 +23,8 @@ namespace Slack.Integration.Controllers
             [FromHeader(Name = "X-Hub-Signature")] string signature,
             [FromBody] JObject content)
         {
-            this.logger.LogInformation($"Event {eventType} received.");
-            this.logger.LogInformation(content.ToString());
+            this.logger.LogInformation($"Event {eventType} received with content: {content.ToString()}");
+
             return Ok();
         }
     }
