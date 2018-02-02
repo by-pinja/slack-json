@@ -18,8 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-      <Content Update="README.md">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+    <None Include="README.md" CopyToOutputDirectory="Always" />
   </ItemGroup>
 </Project>
