@@ -60,6 +60,8 @@ metadata:
   namespace: slack-integration
   annotations:
     kubernetes.io/ingress.class: traefik
+  labels:
+    traefik-type: public
 spec:
   rules:
     - host: slack-integration-master.protacon.cloud
