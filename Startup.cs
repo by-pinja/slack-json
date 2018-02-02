@@ -25,7 +25,6 @@ namespace Slack.Integration
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddSwaggerGen(c =>
             {
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;

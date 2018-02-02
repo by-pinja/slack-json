@@ -20,4 +20,8 @@
   <ItemGroup>
     <None Include="README.md" CopyToOutputDirectory="Always" />
   </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
+  </ItemGroup>
 </Project>

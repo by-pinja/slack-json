@@ -11,7 +11,7 @@ namespace Slack.Integration.Controllers
     {
         private readonly ILogger<WebHookController> logger;
 
-        protected WebHookController(ILogger<WebHookController> logger)
+        public WebHookController(ILogger<WebHookController> logger)
         {
             this.logger = logger;
         }
