@@ -8,8 +8,8 @@ Deploy integration to public web address.
 
 Setup global webhook for address `todo`.
 
-# Github json format
-Add file `slack.json` to repository.
+# slack.json format
+Add file `slack.json` to repository root folder.
 
 ```json
 {
