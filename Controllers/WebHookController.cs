@@ -1,18 +1,25 @@
 using System;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace Slack.Integration.Controllers
 {
     public class WebHookController: Controller
     {
-        [HttpPost("v1/api/github")]
-        public IActionResult IncomingHook([FromBody] JObject content)
+        private readonly ILogger<WebHookController> logger;
+
+        protected WebHookController(ILogger<WebHookController> logger)
         {
-            var tempFile = System.IO.Path.GetTempFileName();
-            System.IO.File.WriteAllText(tempFile, content.ToString());
-            Console.WriteLine(tempFile);
+            this.logger = logger;
+        }
+
+        [HttpPost("v1/api/github")]
+        public IActionResult IncomingHook([FromHeader(Name = "X-GitHub-Event")] string eventType, [FromBody] JObject content)
+        {
+            this.logger.LogInformation($"Event {eventType} received.");
+            this.logger.LogInformation(content.ToString());
             return Ok();
         }
     }
