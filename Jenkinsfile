@@ -29,7 +29,7 @@ podTemplate(label: 'slack-integration',
                 }
             }
             stage('Test') {
-                container('node') {
+                container('dotnet') {
                     sh """
                         dotnet test
                     """
