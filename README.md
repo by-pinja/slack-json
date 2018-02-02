@@ -11,8 +11,8 @@ Add file `slack.json` to repository.
 
 ```json
 {
-    version: "1",
-    channels: ["#general", "#labs"],
-    notify: ["pull-request"]
+    "version": "1",
+    "channels": ["#general", "#labs"],
+    "notify": ["pull-request"]
 }
 ```
