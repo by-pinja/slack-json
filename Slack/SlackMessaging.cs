@@ -7,7 +7,7 @@ namespace Slack.Integration.Slack
     public class SlackMessaging: ISlackMessaging
     {
         private readonly AppOptions options;
-        private readonly string user = "Github-hooks";
+        private readonly string user = "GitHub";
 
         public SlackMessaging(IOptions<AppOptions> options)
         {
