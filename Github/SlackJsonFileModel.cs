@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Slack.Integration.GithubSlackJson
+namespace Slack.Integration.Github
 {
     public class SlackJsonFileModel
     {
