@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -19,7 +20,7 @@ namespace Slack.Integration.Github
             this.options = options;
         }
 
-        public Option<SlackJsonFileModel> GetJsonIfAny(string owner, string repo)
+        public IEnumerable<SlackActionModel> GetJsonIfAny(string owner, string repo)
         {
             try
             {
@@ -27,13 +28,12 @@ namespace Slack.Integration.Github
 
                 var result = client.TryGetSlackJson($"token {this.options.Value.GithubPersonalAccessToken}", owner, repo).Result;
 
-                return Option
-                    .Some<SlackJsonFileModel>(
-                        new SlackJsonFileModel(Enumerable.Empty<string>(), Enumerable.Empty<string>())); // TODO: Real data ...
+                return result.Actions ?? Enumerable.Empty<SlackActionModel>();
             }
-            catch (AggregateException ex) when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
+            catch (AggregateException ex)
+                when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
             {
-                return Option.None<SlackJsonFileModel>();
+                return Enumerable.Empty<SlackActionModel>();
             }
         }
     }

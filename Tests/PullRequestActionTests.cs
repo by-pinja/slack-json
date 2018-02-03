@@ -6,6 +6,8 @@ using Slack.Integration.Actions;
 using Slack.Integration.Slack;
 using Slack.Integration.Tests.GithubRequestPayloads;
 using Xunit;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Slack.Integration.Tests
 {
@@ -17,7 +19,7 @@ namespace Slack.Integration.Tests
             var fetcher = Substitute.For<ISlackFileFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Any<string>(), Arg.Any<string>())
-                .Returns(Option.None<SlackJsonFileModel>());
+                .Returns(Enumerable.Empty<SlackActionModel>());
 
             var slack = Substitute.For<ISlackMessage>();
 
@@ -34,7 +36,15 @@ namespace Slack.Integration.Tests
             var fetcher = Substitute.For<ISlackFileFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Is<string>("protacon"), Arg.Is<string>("testrepo"))
-                .Returns(Option.Some(new SlackJsonFileModel(new [] { "pull_request"}, new []{ "#general"})));
+                .Returns(new List<SlackActionModel>
+                {
+                    new SlackActionModel
+                    {
+                        EventType = "pull_request",
+                        Enabled = true,
+                        Channel = "#general"
+                    }
+                });
 
             var slack = Substitute.For<ISlackMessage>();
 
@@ -51,13 +61,38 @@ namespace Slack.Integration.Tests
             var fetcher = Substitute.For<ISlackFileFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Is<string>("protacon"), Arg.Is<string>("testrepo"))
-                .Returns(Option.Some(new SlackJsonFileModel(new string[] {}, new []{ "#general"})));
+                .Returns(Enumerable.Empty<SlackActionModel>());
 
             var slack = Substitute.For<ISlackMessage>();
 
             var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
+
+            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<string>());
+        }
+
+        [Fact]
+        public void WhenPullRequestIsNotOpened_ThenDontSendAnything()
+        {
+            var fetcher = Substitute.For<ISlackFileFetcher>();
+            fetcher
+                .GetJsonIfAny(Arg.Is<string>("protacon"), Arg.Is<string>("testrepo"))
+                .Returns(new List<SlackActionModel>
+                {
+                    new SlackActionModel
+                    {
+                        EventType = "pull_request",
+                        Enabled = true,
+                        Channel = "#general"
+                    }
+                });
+
+            var slack = Substitute.For<ISlackMessage>();
+
+            var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
+
+            requestAction.Execute(TestPayloads.PullRequestClosed());
 
             slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<string>());
         }

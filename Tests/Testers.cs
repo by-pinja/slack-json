@@ -11,7 +11,9 @@ namespace Slack.Integration.Tests
         [Fact(Skip="tester")]
         public void TesterForSlackJsonFetcher()
         {
-            var fether = new SlackFileFetcher(Options.Create(new AppOptions()));
+            var fether = new SlackFileFetcher(Options.Create(new AppOptions {
+                GithubPersonalAccessToken = "revoked_this"
+            }));
             var result = fether.GetJsonIfAny("protacon", "testrepo");
         }
 

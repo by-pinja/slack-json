@@ -2,15 +2,10 @@ using System.Collections.Generic;
 
 namespace Slack.Integration.Github
 {
-    public class SlackJsonFileModel
+    public class SlackActionModel
     {
-        public SlackJsonFileModel(IEnumerable<string> actions, IEnumerable<string> channels)
-        {
-            Actions = actions;
-            Channels = channels;
-        }
-
-        public IEnumerable<string> Actions { get; }
-        public IEnumerable<string> Channels { get; }
+        public string EventType { get; set; }
+        public string Channel { get; set; }
+        public bool Enabled { get; set; } = true;
     }
 }

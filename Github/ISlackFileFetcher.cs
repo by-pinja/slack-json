@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using Optional;
 
 namespace Slack.Integration.Github
 {
     public interface ISlackFileFetcher
     {
-        Option<SlackJsonFileModel> GetJsonIfAny(string owner, string repo);
+        IEnumerable<SlackActionModel> GetJsonIfAny(string owner, string repo);
     }
 }

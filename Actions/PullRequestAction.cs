@@ -24,34 +24,36 @@ namespace Slack.Integration.Actions
 
         public void Execute(JObject request)
         {
+            var repoAction = request["action"]?.Value<string>()?? "";
+
+            if(repoAction != "opened")
+                return;
+
             var repo = request["pull_request"]?["head"]?["repo"]?["name"]?.Value<string>()
                 ?? throw new InvalidOperationException($"JSON is missing repository, request: {request}");
 
             var owner = request["pull_request"]?["head"]?["repo"]?["owner"]?["login"]?.Value<string>()
                 ?? throw new InvalidOperationException($"JSON is missing owner, request: {request}");
 
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo);
-
-            slackFile.Match(
-                some: file =>
-                {
-                    if(!file.Actions.Any(x => x == "pull_request"))
-                        return;
-
-                    var pr = request["pull_request"]?["url"] ??
+            var pr = request["pull_request"]?["url"] ??
                         throw new InvalidOperationException($"JSON is missing pull request url: {request}");
 
-                    file
-                        .Channels
-                        .ToList()
-                        .ForEach(channel =>
-                        {
-                            this.logger.LogInformation($"Sending message to '{channel}'");
-                            this.slack.Send(channel, $"New pull request <{pr}>");
-                        });
-                },
-                none: () => this.logger.LogInformation($"Checked pull request for '{repo}/{owner} but no slack.json file defined.'")
-            );
+            var slackFile = this.fetcher.GetJsonIfAny(owner, repo);
+
+            if(!slackFile.Any())
+            {
+                this.logger.LogInformation($"Checked pull request for '{repo}/{owner} but no slack.json file defined.'");
+                return;
+            }
+
+            slackFile
+                .Where(x => x.EventType == "pull_request")
+                .ToList()
+                .ForEach(action =>
+                {
+                    this.logger.LogInformation($"Sending message to '{action.Channel}'");
+                    this.slack.Send(action.Channel, $"New pull request <{pr}>");
+                });
         }
     }
 }
