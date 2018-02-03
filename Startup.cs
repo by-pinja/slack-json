@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Slack.Integration.Github;
+using Slack.Integration.Actions;
+using Slack.Integration.Slack;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Slack.Integration
@@ -38,7 +41,13 @@ namespace Slack.Integration
                     });
             });
 
+            services.Configure<AppOptions>(Configuration);
             services.AddMvc();
+
+            services.AddTransient<ISlackMessaging, SlackMessaging>();
+            services.AddTransient<ISlackFileFetcher, SlackFileFetcher>();
+            services.AddTransient<PullRequestAction>();
+            services.AddTransient<ActionFactory>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

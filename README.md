@@ -3,10 +3,10 @@
 # slack-integration
 Integration part that integrates slack to github based on configuration file at repository.
 
-# Setup
-Deploy integration to public web address.
+# Setup for production
+Deploy this .NET core app for you favorite hosting service or docker cluster.
 
-Setup global webhook for address `todo`.
+Setup webhook (global or repository) for address `https://www.yourinstallation.io/v1/api/github/`.
 
 # slack.json format
 Add file `slack.json` to repository root folder.
@@ -14,7 +14,29 @@ Add file `slack.json` to repository root folder.
 ```json
 {
     "version": "1",
-    "channels": ["#general", "#labs"],
-    "notify": ["pull-request"]
+    "actions": [
+        {
+            "eventType": "pull_request",
+            "channel": "#best_project"
+        },
+        {
+            "eventType": "build_failure",
+            "channel": "#best_project"
+        },
+        {
+            "eventType": "pull_request_review",
+            "channel": "#best_project"
+            "enabled": false
+        }
+    ]
 }
 ```
+
+# Development
+Install .NET Core 2.x. and configure appsettings.json or (git ignored) appsettings.localdev.json with correct keys.
+
+```bash
+dotnet run
+```
+
+Now service runs at http://0.0.0.0:5000/, setup github hooks against your public address and you should get hook messages from github in your local development environment.
