@@ -16,16 +16,20 @@ Add file `slack.json` to repository root folder.
     "version": "1",
     "actions": [
         {
-            "eventType": "pull_request",
+            "type": "pull_request",
             "channel": "#best_project"
         },
         {
-            "eventType": "build_failure",
+            "type": "build.failure",
             "channel": "#best_project"
         },
         {
-            "eventType": "pull_request_review",
+            "type": "pull_request.review_request",
             "channel": "#best_project"
+        },
+        {
+            "type": "pull_request.reviewed",
+            "channel": "#best_project",
             "enabled": false
         }
     ]

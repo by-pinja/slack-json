@@ -40,7 +40,7 @@ namespace Slack.Integration.Actions
             }
 
             slackFile
-                .Where(x => x.EventType == "pull_request")
+                .Where(x => x.Type == "pull_request")
                 .ToList()
                 .ForEach(action =>
                 {

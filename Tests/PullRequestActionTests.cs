@@ -40,7 +40,7 @@ namespace Slack.Integration.Tests
                 {
                     new SlackActionModel
                     {
-                        EventType = "pull_request",
+                        Type = "pull_request",
                         Enabled = true,
                         Channel = "#general"
                     }
@@ -82,7 +82,7 @@ namespace Slack.Integration.Tests
                 {
                     new SlackActionModel
                     {
-                        EventType = "pull_request",
+                        Type = "pull_request",
                         Enabled = true,
                         Channel = "#general"
                     }
