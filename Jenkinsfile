@@ -37,9 +37,9 @@ podTemplate(label: 'slack-integration',
             }
             stage('Package') {
                 container('docker') {
-                    def published = publishContainerToGcr(project, branch);
-
                     if(branch == 'master') {
+                        def published = publishContainerToGcr(project, branch);
+
                         toK8sTestEnv() {
                             sh """
                                 kubectl apply -f ./k8s/${branch}.yaml
