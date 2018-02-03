@@ -20,8 +20,8 @@ namespace Slack.Integration.Tests
         [Fact(Skip="tester")]
         public void TesterForSlackIntegration()
         {
-            var slack = new SlackMessage(Options.Create(new AppOptions()));
-            slack.Send("#jenkins", "testtesttest");
+            var slack = new SlackMessaging(Options.Create(new AppOptions()));
+            slack.Send("#jenkins", null);
         }
     }
 }

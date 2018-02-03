@@ -21,13 +21,13 @@ namespace Slack.Integration.Tests
                 .GetJsonIfAny(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(Enumerable.Empty<SlackActionModel>());
 
-            var slack = Substitute.For<ISlackMessage>();
+            var slack = Substitute.For<ISlackMessaging>();
 
             var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
 
-            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<string>());
+            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<SlackMessageModel>());
         }
 
         [Fact]
@@ -46,13 +46,13 @@ namespace Slack.Integration.Tests
                     }
                 });
 
-            var slack = Substitute.For<ISlackMessage>();
+            var slack = Substitute.For<ISlackMessaging>();
 
             var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
 
-            slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<string>());
+            slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>());
         }
 
         [Fact]
@@ -63,13 +63,13 @@ namespace Slack.Integration.Tests
                 .GetJsonIfAny(Arg.Is<string>("protacon"), Arg.Is<string>("testrepo"))
                 .Returns(Enumerable.Empty<SlackActionModel>());
 
-            var slack = Substitute.For<ISlackMessage>();
+            var slack = Substitute.For<ISlackMessaging>();
 
             var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
 
-            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<string>());
+            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<SlackMessageModel>());
         }
 
         [Fact]
@@ -88,13 +88,13 @@ namespace Slack.Integration.Tests
                     }
                 });
 
-            var slack = Substitute.For<ISlackMessage>();
+            var slack = Substitute.For<ISlackMessaging>();
 
             var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestClosed());
 
-            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<string>());
+            slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<SlackMessageModel>());
         }
     }
 }

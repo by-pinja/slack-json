@@ -44,7 +44,7 @@ namespace Slack.Integration
             services.Configure<AppOptions>(Configuration);
             services.AddMvc();
 
-            services.AddTransient<ISlackMessage, SlackMessage>();
+            services.AddTransient<ISlackMessaging, SlackMessaging>();
             services.AddTransient<ISlackFileFetcher, SlackFileFetcher>();
             services.AddTransient<PullRequestAction>();
             services.AddTransient<ActionFactory>();
