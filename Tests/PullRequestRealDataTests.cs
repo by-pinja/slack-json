@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Optional;
 using Slack.Integration.Github;
@@ -20,7 +21,7 @@ namespace Slack.Integration.Tests
 
             var slack = Substitute.For<ISlackMessage>();
 
-            var requestAction = new PullRequestAction(fetcher);
+            var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
 
@@ -37,7 +38,7 @@ namespace Slack.Integration.Tests
 
             var slack = Substitute.For<ISlackMessage>();
 
-            var requestAction = new PullRequestAction(fetcher);
+            var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
 
@@ -54,7 +55,7 @@ namespace Slack.Integration.Tests
 
             var slack = Substitute.For<ISlackMessage>();
 
-            var requestAction = new PullRequestAction(fetcher);
+            var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
             requestAction.Execute(TestPayloads.PullRequestOpened());
 
