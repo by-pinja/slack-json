@@ -20,7 +20,7 @@ Add file `slack.json` to repository root folder.
             "channel": "#best_project"
         },
         {
-            "type": "build.failure",
+            "type": "build_failure",
             "channel": "#best_project"
         },
         {
