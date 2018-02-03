@@ -5,14 +5,13 @@ using Newtonsoft.Json.Linq;
 using Slack.Integration.Github;
 using Slack.Integration.Slack;
 
-namespace Slack.Integration.Parsers
+namespace Slack.Integration.Actions
 {
     public class PullRequestAction : IRequestAction
     {
         private readonly ISlackFileFetcher fetcher;
         private readonly ISlackMessage slack;
         private readonly ILogger<PullRequestAction> logger;
-        private ILogger<SlackFileFetcher> logger1;
 
         public PullRequestAction(ISlackFileFetcher fetcher, ISlackMessage slack, ILogger<PullRequestAction> logger)
         {
@@ -36,13 +35,20 @@ namespace Slack.Integration.Parsers
             slackFile.Match(
                 some: file =>
                 {
+                    if(!file.Actions.Any(x => x == "pull_request"))
+                        return;
+
                     var pr = request["pull_request"]?["url"] ??
                         throw new InvalidOperationException($"JSON is missing pull request url: {request}");
 
                     file
                         .Channels
                         .ToList()
-                        .ForEach(channel => this.slack.Send(channel, $"New pull request '{pr}'"));
+                        .ForEach(channel =>
+                        {
+                            this.logger.LogInformation($"Sending message to '{channel}'");
+                            this.slack.Send(channel, $"New pull request <{pr}>");
+                        });
                 },
                 none: () => this.logger.LogInformation($"Checked pull request for '{repo}/{owner} but no slack.json file defined.'")
             );

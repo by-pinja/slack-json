@@ -4,16 +4,19 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Slack.Integration.Actions;
 
 namespace Slack.Integration.Controllers
 {
     public class WebHookController: Controller
     {
         private readonly ILogger<WebHookController> logger;
+        private readonly ActionFactory actionFactory;
 
-        public WebHookController(ILogger<WebHookController> logger)
+        public WebHookController(ILogger<WebHookController> logger, ActionFactory actionFactory)
         {
             this.logger = logger;
+            this.actionFactory = actionFactory;
         }
 
         [HttpPost("v1/api/github")]
@@ -24,6 +27,11 @@ namespace Slack.Integration.Controllers
             [FromBody] JObject content)
         {
             this.logger.LogInformation($"Event {eventType} received with content: {content.ToString()}");
+
+            this.actionFactory.Resolve(eventType)
+                .MatchSome(
+                    some => some.Execute(content)
+                );
 
             return Ok();
         }

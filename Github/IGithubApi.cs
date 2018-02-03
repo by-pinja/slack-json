@@ -9,6 +9,6 @@ namespace Slack.Integration.Github
         [Header("User-Agent", "Savpek")]
         [Header("Accept", "application/vnd.github.v4.raw")]
         [Get("repos/{owner}/{repo}/contents/slack.json")]
-        Task<string> TryGetSlackJson(string owner, string repo);
+        Task<string> TryGetSlackJson([Header("Authorization")] string authorization, [Path] string owner, [Path] string repo);
     }
 }

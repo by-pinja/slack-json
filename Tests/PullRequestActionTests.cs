@@ -2,14 +2,14 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Optional;
 using Slack.Integration.Github;
-using Slack.Integration.Parsers;
+using Slack.Integration.Actions;
 using Slack.Integration.Slack;
 using Slack.Integration.Tests.GithubRequestPayloads;
 using Xunit;
 
 namespace Slack.Integration.Tests
 {
-    public class PullRequestRealDataTests
+    public class PullRequestActionTests
     {
         [Fact]
         public void WhenRepositoryDoesntContainSlackJson_ThenIgnoreRequest()

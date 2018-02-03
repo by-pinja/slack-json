@@ -1,6 +1,6 @@
 using Newtonsoft.Json.Linq;
 
-namespace Slack.Integration.Parsers
+namespace Slack.Integration.Actions
 {
     public interface IRequestAction
     {

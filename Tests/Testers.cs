@@ -1,5 +1,7 @@
 using System;
+using Microsoft.Extensions.Options;
 using Slack.Integration.Github;
+using Slack.Integration.Slack;
 using Xunit;
 
 namespace Slack.Integration.Tests
@@ -9,8 +11,15 @@ namespace Slack.Integration.Tests
         [Fact(Skip="tester")]
         public void TesterForSlackJsonFetcher()
         {
-            var fether = new SlackFileFetcher();
-            var result = fether.GetJsonIfAny("protacon", "slack-integration");
+            var fether = new SlackFileFetcher(Options.Create(new AppOptions()));
+            var result = fether.GetJsonIfAny("protacon", "testrepo");
+        }
+
+        [Fact(Skip="tester")]
+        public void TesterForSlackIntegration()
+        {
+            var slack = new SlackMessage(Options.Create(new AppOptions()));
+            slack.Send("#jenkins", "testtesttest");
         }
     }
 }
