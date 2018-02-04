@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -28,10 +29,15 @@ namespace Slack.Integration.Controllers
         {
             this.logger.LogInformation($"Event {eventType} received with content: {content.ToString()}");
 
-            this.actionFactory.Resolve(eventType)
-                .MatchSome(
-                    some => some.Execute(content)
-                );
+            var action = content["action"]?.Value<string>() ?? "UNKNOWN";
+
+            var actions = this.actionFactory.Resolve(eventType, action);
+
+            if(!actions.Any())
+                this.logger.LogInformation($"No handler for type {eventType} and action {action}");
+
+            actions.ToList()
+                .ForEach(a => a.Execute(content));
 
             return Ok();
         }

@@ -1,17 +1,16 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using Optional;
-using Slack.Integration.Github;
 using Slack.Integration.Actions;
+using Slack.Integration.Github;
 using Slack.Integration.Slack;
 using Slack.Integration.Tests.GithubRequestPayloads;
 using Xunit;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Slack.Integration.Tests
 {
-    public class PullRequestActionTests
+    public class ReviewRequestActionTests
     {
         [Fact]
         public void WhenRepositoryDoesntContainSlackJson_ThenIgnoreRequest()
@@ -31,21 +30,21 @@ namespace Slack.Integration.Tests
         }
 
         [Fact]
-        public void WhenRepositoryContainsSlackJsonWithPullRequestAction_ThenSendMessage()
+        public void WhenValidRequestIsSent_ThenSendNotifications()
         {
-            var fetcher = DepencyMockFactories.SlackFileFetcherMock("pull_request", "#general");
+            ISlackFileFetcher fetcher = DepencyMockFactories.SlackFileFetcherMock("review_request", "#general");
 
             var slack = Substitute.For<ISlackMessaging>();
 
-            var requestAction = new PullRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
+            var requestAction = new ReviewRequestAction(fetcher, slack, Substitute.For<ILogger<PullRequestAction>>());
 
-            requestAction.Execute(TestPayloads.PullRequestOpened());
+            requestAction.Execute(TestPayloads.ReviewRequestOpened());
 
             slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>());
         }
 
         [Fact]
-        public void WhenSlackJsonDoesntContainPullRequestAction_ThenIgnoreSend()
+        public void WhenSlackJsonDoesntContainReviewRequestAction_ThenIgnoreSend()
         {
             var fetcher = Substitute.For<ISlackFileFetcher>();
             fetcher

@@ -41,7 +41,7 @@ Add file `slack.json` to repository root folder.
             "channel": "#best_project"
         },
         {
-            "type": "reviewed",
+            "type": "review_done",
             "channel": "#best_project",
             "enabled": false
         }

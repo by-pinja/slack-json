@@ -13,18 +13,14 @@ namespace Slack.Integration.Actions
         {
             this.actions = new List<IRequestAction>
             {
-                (IRequestAction)services.GetService(typeof(PullRequestAction))
+                (IRequestAction)services.GetService(typeof(PullRequestAction)),
+                (IRequestAction)services.GetService(typeof(ReviewRequestAction))
             };
         }
 
-        public Option<IRequestAction> Resolve(string requestAction)
+        public IEnumerable<IRequestAction> Resolve(string requestAction, string action)
         {
-            var match =  actions.SingleOrDefault(x => x.RequestType == requestAction);
-
-            if(match != null)
-                return Option.Some(match);
-
-            return Option.None<IRequestAction>();
+            return actions.Where(x => x.RequestType == requestAction && x.RequestAction == action);
         }
     }
 }
