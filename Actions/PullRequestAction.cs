@@ -42,9 +42,9 @@ namespace Slack.Integration.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New pull request '{prTitle}' in repository {owner}/{repo}", prHtmlUrl)
+                        new SlackMessageModel($"New pull request '{prTitle}'", prHtmlUrl)
                         {
-                            Color = "#f4c242"
+                            Color = "warning"
                         });
                 });
         }

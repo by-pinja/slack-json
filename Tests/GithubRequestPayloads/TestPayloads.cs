@@ -17,5 +17,6 @@ namespace Slack.Integration.Tests.GithubRequestPayloads
 
         public static JObject PullRequestOpened() => JObject.Parse(GetContent("pullRequest.json"));
         public static JObject ReviewRequestOpened() => JObject.Parse(GetContent("reviewRequest.json"));
+        public static JObject ReviewSubmit() => JObject.Parse(GetContent("reviewSubmit.json"));
     }
 }
