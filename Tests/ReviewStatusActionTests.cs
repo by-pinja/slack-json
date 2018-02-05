@@ -21,7 +21,7 @@ namespace Slack.Integration.Tests
 
             requestAction.Execute(TestPayloads.ReviewSubmit());
 
-            slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Is<SlackMessageModel>(x => x.Text.Contains("Rejected") && x.Color == "red"));
+            slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Is<SlackMessageModel>(x => x.Text.Contains("Rejected") && x.Color == "danger"));
         }
     }
 }
