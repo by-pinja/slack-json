@@ -46,7 +46,7 @@ namespace Slack.Integration.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New review request for pull request '{prTitle}' in repository {owner}/{repo}", prHtmlUrl)
+                        new SlackMessageModel($"Review request for pull request '{prTitle}'", prHtmlUrl)
                         {
                             Text = $"Review is requested from {string.Join(", ", reviewers)}"
                         });

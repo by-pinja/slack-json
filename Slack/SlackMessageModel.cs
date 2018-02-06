@@ -12,6 +12,6 @@ namespace Slack.Integration.Slack
         public string Text { get; set; } = "";
         public string Href { get; set; }
         public string Icon { get; set;} = ":github:";
-        public string Color { get; set; } = "#f4c242";
+        public string Color { get; set; } = "warning";
     }
 }

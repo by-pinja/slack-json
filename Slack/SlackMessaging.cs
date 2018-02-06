@@ -33,7 +33,7 @@ namespace Slack.Integration.Slack
                             title = model.Title,
                             title_link = model.Href,
                             text = model.Text,
-                            footer = "https://github.com/protacon/slack-integration"
+                            footer = model.Href
                         }
                     }
                 }).Wait();

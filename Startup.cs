@@ -48,6 +48,7 @@ namespace Slack.Integration
             services.AddTransient<ISlackFileFetcher, SlackFileFetcher>();
             services.AddTransient<PullRequestAction>();
             services.AddTransient<ReviewRequestAction>();
+            services.AddTransient<ReviewStatusAction>();
             services.AddTransient<ActionFactory>();
         }
 

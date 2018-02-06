@@ -14,7 +14,8 @@ namespace Slack.Integration.Actions
             this.actions = new List<IRequestAction>
             {
                 (IRequestAction)services.GetService(typeof(PullRequestAction)),
-                (IRequestAction)services.GetService(typeof(ReviewRequestAction))
+                (IRequestAction)services.GetService(typeof(ReviewRequestAction)),
+                (IRequestAction)services.GetService(typeof(ReviewStatusAction))
             };
         }
 
