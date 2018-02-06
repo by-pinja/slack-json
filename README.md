@@ -1,5 +1,5 @@
 [![Docker pulls](https://img.shields.io/docker/pulls/ptcos/slack-json.svg)](https://hub.docker.com/r/ptcos/slack-json/)
-[![Build Status](https://jenkins.protacon.cloud/buildStatus/icon?job=www.github.com/slack-integration/master)](https://jenkins.protacon.cloud/job/www.github.com/job/slack-integration/job/master/)
+[![Build Status](https://jenkins.protacon.cloud/buildStatus/icon?job=www.github.com/slack-json/master)](https://jenkins.protacon.cloud/job/www.github.com/job/slack-json/job/master/)
 
 # slack-integration
 Service which integrates slack to github based on configuration file `slack.json` at repository.
