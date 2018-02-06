@@ -5,9 +5,9 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using Slack.Integration.Actions;
+using Slack.Json.Actions;
 
-namespace Slack.Integration.Controllers
+namespace Slack.Json.Controllers
 {
     public class WebHookController: Controller
     {

@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using Optional;
 using RestEase;
 
-namespace Slack.Integration.Github
+namespace Slack.Json.Github
 {
     public class SlackFileFetcher : ISlackFileFetcher
     {

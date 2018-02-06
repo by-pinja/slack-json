@@ -1,7 +1,7 @@
 using System.IO;
 using Newtonsoft.Json.Linq;
 
-namespace Slack.Integration.Tests.GithubRequestPayloads
+namespace Slack.Json.Tests.GithubRequestPayloads
 {
     public static class TestPayloads
     {

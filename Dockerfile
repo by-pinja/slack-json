@@ -5,4 +5,4 @@ COPY out .
 
 EXPOSE 5000
 
-ENTRYPOINT ["dotnet", "Slack.Integration.dll"]
+ENTRYPOINT ["dotnet", "Slack.Json.dll"]

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Slack.Integration.Github
+namespace Slack.Json.Github
 {
     public class SlackActionModel
     {

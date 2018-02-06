@@ -1,10 +1,10 @@
 using System;
 using Microsoft.Extensions.Options;
-using Slack.Integration.Github;
-using Slack.Integration.Slack;
+using Slack.Json.Github;
+using Slack.Json.Slack;
 using Xunit;
 
-namespace Slack.Integration.Tests
+namespace Slack.Json.Tests
 {
     public class Testers
     {

@@ -1,15 +1,15 @@
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Optional;
-using Slack.Integration.Github;
-using Slack.Integration.Actions;
-using Slack.Integration.Slack;
-using Slack.Integration.Tests.GithubRequestPayloads;
+using Slack.Json.Github;
+using Slack.Json.Actions;
+using Slack.Json.Slack;
+using Slack.Json.Tests.GithubRequestPayloads;
 using Xunit;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Slack.Integration.Tests
+namespace Slack.Json.Tests
 {
     public class PullRequestActionTests
     {

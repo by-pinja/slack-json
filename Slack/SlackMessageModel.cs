@@ -1,4 +1,4 @@
-namespace Slack.Integration.Slack
+namespace Slack.Json.Slack
 {
     public class SlackMessageModel
     {

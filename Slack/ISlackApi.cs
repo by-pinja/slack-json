@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using RestEase;
 
-namespace Slack.Integration.Slack
+namespace Slack.Json.Slack
 {
     public interface ISlackApi
     {

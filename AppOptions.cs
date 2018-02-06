@@ -1,4 +1,4 @@
-namespace Slack.Integration
+namespace Slack.Json
 {
     public class AppOptions
     {

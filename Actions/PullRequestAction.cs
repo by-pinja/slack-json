@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using Slack.Integration.Github;
-using Slack.Integration.Slack;
+using Slack.Json.Github;
+using Slack.Json.Slack;
 
-namespace Slack.Integration.Actions
+namespace Slack.Json.Actions
 {
     public class PullRequestAction : IRequestAction
     {

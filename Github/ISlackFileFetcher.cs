@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Optional;
 
-namespace Slack.Integration.Github
+namespace Slack.Json.Github
 {
     public interface ISlackFileFetcher
     {

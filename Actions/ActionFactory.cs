@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Optional;
 
-namespace Slack.Integration.Actions
+namespace Slack.Json.Actions
 {
     public class ActionFactory
     {

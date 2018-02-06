@@ -10,12 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
-using Slack.Integration.Github;
-using Slack.Integration.Actions;
-using Slack.Integration.Slack;
+using Slack.Json.Github;
+using Slack.Json.Actions;
+using Slack.Json.Slack;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace Slack.Integration
+namespace Slack.Json
 {
     public class Startup
     {
@@ -63,7 +63,7 @@ namespace Slack.Integration
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Slack.Integration");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Slack.Json");
                 c.RoutePrefix = "doc";
             });
         }

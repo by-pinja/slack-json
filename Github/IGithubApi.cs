@@ -2,7 +2,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using RestEase;
 
-namespace Slack.Integration.Github
+namespace Slack.Json.Github
 {
     public interface IGitHubApi
     {

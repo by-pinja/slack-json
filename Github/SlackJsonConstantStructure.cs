@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Slack.Integration.Github
+namespace Slack.Json.Github
 {
     public class SlackJsonConstantStructure
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using NSubstitute;
-using Slack.Integration.Github;
+using Slack.Json.Github;
 
-namespace Slack.Integration.Tests
+namespace Slack.Json.Tests
 {
     public static class DepencyMockFactories
     {

@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json.Linq;
 
-namespace Slack.Integration.Actions
+namespace Slack.Json.Actions
 {
     public static class ActionUtils
     {

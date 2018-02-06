@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using Slack.Integration.Actions;
-using Slack.Integration.Github;
-using Slack.Integration.Slack;
-using Slack.Integration.Tests.GithubRequestPayloads;
+using Slack.Json.Actions;
+using Slack.Json.Github;
+using Slack.Json.Slack;
+using Slack.Json.Tests.GithubRequestPayloads;
 using Xunit;
 
-namespace Slack.Integration.Tests
+namespace Slack.Json.Tests
 {
     public class ReviewStatusActionTests
     {

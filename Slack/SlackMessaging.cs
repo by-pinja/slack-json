@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using RestEase;
 
-namespace Slack.Integration.Slack
+namespace Slack.Json.Slack
 {
 
     public class SlackMessaging: ISlackMessaging
