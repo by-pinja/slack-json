@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Options;
 using RestEase;
 
@@ -12,6 +13,9 @@ namespace Slack.Json.Slack
         public SlackMessaging(IOptions<AppOptions> options)
         {
             this.options = options.Value;
+
+            if(string.IsNullOrEmpty(this.options.SlackIntegrationUri))
+                throw new ArgumentException(nameof(this.options.SlackIntegrationUri));
         }
 
         public void Send(string channel, SlackMessageModel model)

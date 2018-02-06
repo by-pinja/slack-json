@@ -13,11 +13,14 @@ namespace Slack.Json.Github
 {
     public class SlackFileFetcher : ISlackFileFetcher
     {
-        private readonly IOptions<AppOptions> options;
+        private readonly string accessToken;
 
         public SlackFileFetcher(IOptions<AppOptions> options)
         {
-            this.options = options;
+            this.accessToken = options.Value.GithubPersonalAccessToken;
+
+            if(string.IsNullOrEmpty(this.accessToken))
+                throw new ArgumentException(nameof(this.accessToken));
         }
 
         public IEnumerable<SlackActionModel> GetJsonIfAny(string owner, string repo)
@@ -26,7 +29,7 @@ namespace Slack.Json.Github
             {
                 var client = RestClient.For<IGitHubApi>("https://api.github.com");
 
-                var result = client.TryGetSlackJson($"token {this.options.Value.GithubPersonalAccessToken}", owner, repo).Result;
+                var result = client.TryGetSlackJson($"token {this.accessToken}", owner, repo).Result;
 
                 return result.Actions ?? Enumerable.Empty<SlackActionModel>();
             }

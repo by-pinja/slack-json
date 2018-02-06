@@ -27,20 +27,12 @@ spec:
       name: slack-integration-master
     spec:
       containers:
-      - image: ptcos/slack-json:0.0.2
+      - image: ptcos/slack-json:0.0.3
         imagePullPolicy: Always
         name: slack-integration-master
-        env:
-          - name: ASPNETCORE_ASPNETCORE_SlackIntegrationUri
-            valueFrom:
-              configMapKeyRef:
-                name: slack-json-config
-                key: SlackIntegrationUri
-          - name: ASPNETCORE_GithubPersonalAccessToken
-            valueFrom:
-              configMapKeyRef:
-                name: slack-json-config
-                key: GithubPersonalAccessToken
+        envFrom:
+          - configMapRef:
+              name: slack-json-config
 
 ---
 
