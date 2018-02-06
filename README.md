@@ -1,3 +1,4 @@
+[![Docker pulls](https://img.shields.io/docker/pulls/ptcos/slack-json.svg)](https://hub.docker.com/r/ptcos/slack-json/)
 [![Build Status](https://jenkins.protacon.cloud/buildStatus/icon?job=www.github.com/slack-integration/master)](https://jenkins.protacon.cloud/job/www.github.com/job/slack-integration/job/master/)
 
 # slack-integration
@@ -12,7 +13,13 @@ At best this solution is when hooks can be enabled at organization level. After 
 Deploy this .NET core app for you favorite hosting service or docker cluster.
 
 ### Docker example
-...
+```bash
+docker run -it \
+    --env=ASPNETCORE_SlackIntegrationUri=https://hooks.slack.com/services/12345/12345123451234512345 \
+    --env=ASPNETCORE_GithubPersonalAccessToken=1234512345123451234512345123451234512345 \
+    -p 5000:5000 \
+    ptcos/slack-json:latest
+```
 
 ## Github configuration
 1. Setup github webhook (global or repository) for address `https://www.yourinstallation.io/v1/api/github/`.
@@ -29,27 +36,27 @@ Add file `slack.json` to repository root folder.
     "version": "1",
     "actions": [
         {
-            "eventType": "pull_request",
+            "type": "pull_request",
             "channel": "#best_project"
         },
         {
-            "eventType": "review_request",
+            "type": "review_request",
             "channel": "#best_project"
         },
         {
-            "eventType": "review_status",
+            "type": "review_status",
             "channel": "#best_project"
         },
         {
-            "eventType": "pull_request",
+            "type": "pull_request",
             "channel": "#best_devops_channel_ever"
         },
         {
-            "eventType": "build_failure",
+            "type": "build_failure",
             "channel": "#best_devops_channel_ever"
         },
         {
-            "eventType": "build_failure",
+            "type": "build_failure",
             "channel": "#jenkins",
             "enabled": false
         }
@@ -65,3 +72,5 @@ dotnet run
 ```
 
 Now service runs at http://0.0.0.0:5000/, setup github hooks against your public address and you should get hook messages from github in your local development environment.
+
+See swagger document at http://0.0.0.0:5000/doc
