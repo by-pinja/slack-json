@@ -33,15 +33,15 @@ Add file `slack.json` to repository root folder.
             "channel": "#best_project"
         },
         {
-            "type": "build.failure",
+            "type": "build_failure",
             "channel": "#best_project"
         },
         {
-            "type": "pull_request.review_request",
+            "type": "review_request",
             "channel": "#best_project"
         },
         {
-            "type": "pull_request.reviewed",
+            "type": "review_done",
             "channel": "#best_project",
             "enabled": false
         }

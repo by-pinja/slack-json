@@ -21,15 +21,11 @@ namespace Slack.Integration.Actions
         }
 
         public string RequestType => "pull_request";
+        public string RequestAction => "opened";
 
         public void Execute(JObject request)
         {
-            var repoAction = request["action"]?.Value<string>() ?? "";
-
-            if (repoAction != "opened")
-                return;
-
-            ParseMandatoryJsonFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
 
             var slackFile = this.fetcher.GetJsonIfAny(owner, repo);
 
@@ -51,18 +47,6 @@ namespace Slack.Integration.Actions
                             Color = "#f4c242"
                         });
                 });
-        }
-
-        private static void ParseMandatoryJsonFields(JObject request, out string repo, out string owner, out string prHtmlUrl, out string prTitle)
-        {
-            repo = request["pull_request"]?["head"]?["repo"]?["name"]?.Value<string>()
-                ?? throw new InvalidOperationException($"JSON is missing repository, request: {request}");
-            owner = request["pull_request"]?["head"]?["repo"]?["owner"]?["login"]?.Value<string>()
-                ?? throw new InvalidOperationException($"JSON is missing owner, request: {request}");
-            prHtmlUrl = request["pull_request"]?["html_url"].Value<string>()
-                ?? throw new InvalidOperationException($"JSON is missing pull request html_url: {request}");
-            prTitle = request["pull_request"]?["title"].Value<string>()
-                ?? throw new InvalidOperationException($"JSON is missing pull request title: {request}");
         }
     }
 }
