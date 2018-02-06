@@ -37,14 +37,15 @@ podTemplate(label: 'slack-integration',
             }
             stage('Package') {
                 container('docker') {
-                    if(branch == 'master') {
-                        def published = publishContainerToGcr(project, branch);
+                    sh """
+                        docker build -t ptcos/slack-json:latest .
+                    """
 
-                        toK8sTestEnv() {
-                            sh """
-                                kubectl apply -f ./k8s/${branch}.yaml
-                                kubectl set image deployment/$project-$branch $project-$branch=$published.image:$published.tag --namespace=$namespace
-                            """
+                    if(env.GIT_TAG_NAME && env.GIT_TAG_NAME != "null") {
+                        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                            def image = docker.image("ptcos/slack-json")
+                            image.push("latest")
+                            image.push(env.GIT_TAG_NAME)
                         }
                     }
                 }
