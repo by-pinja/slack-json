@@ -15,18 +15,18 @@ Deploy this .NET core app for you favorite hosting service or docker cluster.
 ### Docker example
 ```bash
 docker run -it \
-    --env=ASPNETCORE_SlackIntegrationUri=https://hooks.slack.com/services/12345/12345123451234512345 \
-    --env=ASPNETCORE_GithubPersonalAccessToken=1234512345123451234512345123451234512345 \
+    --env=SlackIntegrationUri=https://hooks.slack.com/services/12345/12345123451234512345 \
+    --env=GithubPersonalAccessToken=1234512345123451234512345123451234512345 \
     -p 5000:5000 \
     ptcos/slack-json:latest
 ```
 
 ## Github configuration
 1. Setup github webhook (global or repository) for address `https://www.yourinstallation.io/v1/api/github/`.
-2. Create personal access token and add it to slack-integration service appsettings.json or to environment variable `ASPNETCORE_GithubPersonalAccessToken`.
+2. Create personal access token and add it to slack-integration service appsettings.json or to environment variable `GithubPersonalAccessToken`.
 
 ## Slack configuration
-1. Create new 'Incoming webhook' app and set 'Webhook URL' to appsettings.json or environment variable `ASPNETCORE_SlackIntegrationUri`.
+1. Create new 'Incoming webhook' app and set 'Webhook URL' to appsettings.json or environment variable `SlackIntegrationUri`.
 
 # slack.json format
 Add file `slack.json` to repository root folder.
