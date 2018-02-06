@@ -15,49 +15,46 @@ podTemplate(label: 'slack-integration',
     def notifyslackchannel = "#jenkins"
 
     node('slack-integration') {
-        try {
-            // onStartNotifySlack(notifyslackchannel);
-            // onStartNotifyEmail(notifymailrecipient);
-            stage('Checkout') {
-                checkout_with_tags()
+        stage('Checkout') {
+            checkout_with_tags()
+        }
+        stage('Build') {
+            container('dotnet') {
+                sh """
+                    dotnet publish -c Release -o out
+                """
             }
-            stage('Build') {
-                container('dotnet') {
-                    sh """
-                        dotnet publish -c Release -o out
-                    """
-                }
+        }
+        stage('Test') {
+            container('dotnet') {
+                sh """
+                    dotnet test
+                """
             }
-            stage('Test') {
-                container('dotnet') {
-                    sh """
-                        dotnet test
-                    """
-                }
-            }
-            stage('Package') {
-                container('docker') {
-                    sh """
-                        docker build -t ptcos/slack-json:latest .
-                    """
+        }
+        stage('Package') {
+            container('docker') {
+                sh """
+                    docker build -t ptcos/slack-json:latest .
+                """
 
-                    if(env.GIT_TAG_NAME && env.GIT_TAG_NAME != "null") {
-                        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                            def image = docker.image("ptcos/slack-json")
-                            image.push("latest")
-                            image.push(env.GIT_TAG_NAME)
-                        }
+                if(env.GIT_TAG_NAME && env.GIT_TAG_NAME != "null") {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        def image = docker.image("ptcos/slack-json")
+                        image.push("latest")
+                        image.push(env.GIT_TAG_NAME)
+                    }
+                }
+
+                if(branch == "master")
+                {
+                    toK8sTestEnv() {
+                        sh """
+                            kubectl apply -f ./k8s/master.yaml
+                        """
                     }
                 }
             }
-            // onSuccessNotifySlack(notifyslackchannel);
-            // onSuccessNotifyEmail(notifymailrecipient);
-        }
-        catch (e) {
-            currentBuild.result = "FAILED"
-            // onFailureNotifySlack(notifyslackchannel);
-            // onFailureNotifyEmail(notifymailrecipient);
-            throw e
         }
     }
   }
