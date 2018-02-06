@@ -29,20 +29,28 @@ Add file `slack.json` to repository root folder.
     "version": "1",
     "actions": [
         {
-            "type": "pull_request",
+            "eventType": "pull_request",
             "channel": "#best_project"
         },
         {
-            "type": "build_failure",
+            "eventType": "review_request",
             "channel": "#best_project"
         },
         {
-            "type": "review_request",
+            "eventType": "review_status",
             "channel": "#best_project"
         },
         {
-            "type": "review_done",
-            "channel": "#best_project",
+            "eventType": "pull_request",
+            "channel": "#best_devops_channel_ever"
+        },
+        {
+            "eventType": "build_failure",
+            "channel": "#best_devops_channel_ever"
+        },
+        {
+            "eventType": "build_failure",
+            "channel": "#jenkins",
             "enabled": false
         }
     ]
