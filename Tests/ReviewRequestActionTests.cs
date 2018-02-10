@@ -15,7 +15,7 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenRepositoryDoesntContainSlackJson_ThenIgnoreRequest()
         {
-            var fetcher = Substitute.For<ISlackFileFetcher>();
+            var fetcher = Substitute.For<ISlackActionFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(Enumerable.Empty<SlackActionModel>());
@@ -32,7 +32,7 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenValidRequestIsSent_ThenSendNotifications()
         {
-            ISlackFileFetcher fetcher = DepencyMockFactories.SlackFileFetcherMock("review_request", "#general");
+            ISlackActionFetcher fetcher = DepencyMockFactories.SlackFileFetcherMock("review_request", "#general");
 
             var slack = Substitute.For<ISlackMessaging>();
 
@@ -46,7 +46,7 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenSlackJsonDoesntContainReviewRequestAction_ThenIgnoreSend()
         {
-            var fetcher = Substitute.For<ISlackFileFetcher>();
+            var fetcher = Substitute.For<ISlackActionFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Is<string>("protacon"), Arg.Is<string>("testrepo"))
                 .Returns(Enumerable.Empty<SlackActionModel>());

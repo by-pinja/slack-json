@@ -13,7 +13,7 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenChangesAreRequested_ThenSendCorrectSlackMessage()
         {
-            ISlackFileFetcher fetcher = DepencyMockFactories.SlackFileFetcherMock("review_status", "#general");
+            ISlackActionFetcher fetcher = DepencyMockFactories.SlackFileFetcherMock("review_status", "#general");
 
             var slack = Substitute.For<ISlackMessaging>();
 

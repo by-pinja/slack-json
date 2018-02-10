@@ -45,7 +45,7 @@ namespace Slack.Json
             services.AddMvc();
 
             services.AddTransient<ISlackMessaging, SlackMessaging>();
-            services.AddTransient<ISlackFileFetcher, SlackFileFetcher>();
+            services.AddTransient<ISlackActionFetcher, SlackActionFetcher>();
             services.AddTransient<PullRequestAction>();
             services.AddTransient<ReviewRequestAction>();
             services.AddTransient<ReviewStatusAction>();

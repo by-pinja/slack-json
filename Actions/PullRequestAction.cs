@@ -9,11 +9,11 @@ namespace Slack.Json.Actions
 {
     public class PullRequestAction : IRequestAction
     {
-        private readonly ISlackFileFetcher fetcher;
+        private readonly ISlackActionFetcher fetcher;
         private readonly ISlackMessaging slack;
         private readonly ILogger<PullRequestAction> logger;
 
-        public PullRequestAction(ISlackFileFetcher fetcher, ISlackMessaging slack, ILogger<PullRequestAction> logger)
+        public PullRequestAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<PullRequestAction> logger)
         {
             this.fetcher = fetcher;
             this.slack = slack;

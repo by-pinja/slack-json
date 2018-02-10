@@ -11,13 +11,15 @@ using RestEase;
 
 namespace Slack.Json.Github
 {
-    public class SlackFileFetcher : ISlackFileFetcher
+    public class SlackActionFetcher : ISlackActionFetcher
     {
         private readonly string accessToken;
+        private readonly IEnumerable<SlackActionModel> globalActions;
 
-        public SlackFileFetcher(IOptions<AppOptions> options)
+        public SlackActionFetcher(IOptions<AppOptions> options)
         {
             this.accessToken = options.Value.GithubPersonalAccessToken;
+            this.globalActions = options.Value.GlobalSlackJson;
 
             if(string.IsNullOrEmpty(this.accessToken))
                 throw new ArgumentException(nameof(this.accessToken));
@@ -31,7 +33,9 @@ namespace Slack.Json.Github
 
                 var result = client.TryGetSlackJson($"token {this.accessToken}", owner, repo).Result;
 
-                return result.Actions ?? Enumerable.Empty<SlackActionModel>();
+                return result.Actions?
+                    .Concat(this.globalActions ?? Enumerable.Empty<SlackActionModel>())
+                        ?? Enumerable.Empty<SlackActionModel>();
             }
             catch (AggregateException ex)
                 when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
