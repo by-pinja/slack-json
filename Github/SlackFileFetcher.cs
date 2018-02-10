@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Optional;
@@ -15,14 +16,16 @@ namespace Slack.Json.Github
     {
         private readonly string accessToken;
         private readonly IEnumerable<SlackActionModel> globalActions;
+        private readonly ILogger<SlackActionFetcher> logger;
 
-        public SlackActionFetcher(IOptions<AppOptions> options)
+        public SlackActionFetcher(IOptions<AppOptions> options, ILogger<SlackActionFetcher> logger)
         {
             this.accessToken = options.Value.GithubPersonalAccessToken;
             this.globalActions = options.Value.GlobalSlackJson;
 
             if(string.IsNullOrEmpty(this.accessToken))
                 throw new ArgumentException(nameof(this.accessToken));
+            this.logger = logger;
         }
 
         public IEnumerable<SlackActionModel> GetJsonIfAny(string owner, string repo)
@@ -40,6 +43,7 @@ namespace Slack.Json.Github
             catch (AggregateException ex)
                 when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
             {
+                this.logger.LogInformation($"Checked slack.json for '{owner}/{repo} but no slack.json file defined.'");
                 return Enumerable.Empty<SlackActionModel>();
             }
         }

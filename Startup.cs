@@ -49,6 +49,7 @@ namespace Slack.Json
             services.AddTransient<PullRequestAction>();
             services.AddTransient<ReviewRequestAction>();
             services.AddTransient<ReviewStatusAction>();
+            services.AddTransient<NewPublicRepoAction>();
             services.AddTransient<ActionFactory>();
         }
 
