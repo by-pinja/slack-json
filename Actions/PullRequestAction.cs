@@ -12,6 +12,7 @@ namespace Slack.Json.Actions
         private readonly ISlackActionFetcher fetcher;
         private readonly ISlackMessaging slack;
         private readonly ILogger<PullRequestAction> logger;
+        private readonly string type = "pull_request";
 
         public PullRequestAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<PullRequestAction> logger)
         {
@@ -27,17 +28,14 @@ namespace Slack.Json.Actions
         {
             ActionUtils.ParsePullRequestDefaultFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
 
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo);
+            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
+                .Where(slackJsonAction => slackJsonAction.Type == this.type)
+                .ToList();
 
             if (!slackFile.Any())
-            {
-                this.logger.LogInformation($"Checked pull request for '{owner}/{repo} but no slack.json file defined.'");
                 return;
-            }
 
             slackFile
-                .Where(x => x.Type == "pull_request")
-                .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");

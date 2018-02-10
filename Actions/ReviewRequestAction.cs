@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Slack.Json.Github;
 using Slack.Json.Slack;
+using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
@@ -12,6 +13,7 @@ namespace Slack.Json.Actions
         private ISlackActionFetcher fetcher;
         private ISlackMessaging slack;
         private ILogger<PullRequestAction> logger;
+        private readonly string type = "review_request";
 
         public ReviewRequestAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<PullRequestAction> logger)
         {
@@ -27,21 +29,17 @@ namespace Slack.Json.Actions
         {
             ActionUtils.ParsePullRequestDefaultFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
 
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo);
+            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
+                .Where(slackJsonAction => slackJsonAction.Type == this.type)
+                .ToList();
 
             if (!slackFile.Any())
-            {
-                this.logger.LogInformation($"Checked review_request for '{owner}/{repo} but no slack.json file defined.'");
                 return;
-            }
 
-            var reviewers = request["pull_request"]?["requested_reviewers"]?.Value<JArray>()
-                    .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_reviewers.login"))
-                ?? throw new InvalidOperationException($"Missing pull_request.requested_reviewers");
+            var reviewers = request.Get<JArray>(x => x.pull_request.requested_reviewers)
+                    .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_reviewers.login"));
 
             slackFile
-                .Where(slackJsonAction => slackJsonAction.Type == "review_request")
-                .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Slack.Json.Github;
 using Slack.Json.Slack;
+using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
@@ -12,6 +13,7 @@ namespace Slack.Json.Actions
         private ISlackActionFetcher fetcher;
         private ISlackMessaging slack;
         private ILogger<NewPublicRepoAction> logger;
+        private readonly string type = "new_public_repository";
 
         public NewPublicRepoAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<NewPublicRepoAction> logger)
         {
@@ -26,26 +28,18 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request)
         {
-            var owner = request["repository"]?["owner"]?["login"]?.Value<string>()
-                ?? throw new InvalidOperationException("Cannot find repository.owner from request.");
+            var owner = request.Get(x => x.repository.owner.login);
+            var repo = request.Get(x => x.repository.name);
+            var repoHtmlUrl = request.Get(x => x.repository.html_url);
 
-            var repo = request["repository"]?["name"]?.Value<string>()
-                ?? throw new InvalidOperationException("Cannot find repository.owner from request.");
-
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo);
+            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
+                .Where(slackJsonAction => slackJsonAction.Type == this.type)
+                .ToList();
 
             if (!slackFile.Any())
-            {
-                this.logger.LogInformation($"Checked pull request for '{owner}/{repo} but no slack.json file defined.'");
                 return;
-            }
-
-            var repoHtmlUrl = request["repository"]?["html_url"]?.Value<string>()
-                ?? throw new InvalidOperationException("Cannot find repository.html_url from request.");
 
             slackFile
-                .Where(x => x.Type == "new_public_repository")
-                .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");

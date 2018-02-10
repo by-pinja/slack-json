@@ -1,5 +1,7 @@
 using System;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NSubstitute;
 using Slack.Json.Github;
 using Slack.Json.Slack;
 using Xunit;
@@ -13,7 +15,7 @@ namespace Slack.Json.Tests
         {
             var fether = new SlackActionFetcher(Options.Create(new AppOptions {
                 GithubPersonalAccessToken = "revoked_this"
-            }));
+            }), Substitute.For<ILogger<SlackActionFetcher>>());
             var result = fether.GetJsonIfAny("protacon", "testrepo");
         }
 
