@@ -16,7 +16,7 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenRepositoryDoesntContainSlackJson_ThenIgnoreRequest()
         {
-            var fetcher = Substitute.For<ISlackFileFetcher>();
+            var fetcher = Substitute.For<ISlackActionFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(Enumerable.Empty<SlackActionModel>());
@@ -47,7 +47,7 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenSlackJsonDoesntContainPullRequestAction_ThenIgnoreSend()
         {
-            var fetcher = Substitute.For<ISlackFileFetcher>();
+            var fetcher = Substitute.For<ISlackActionFetcher>();
             fetcher
                 .GetJsonIfAny(Arg.Is<string>("protacon"), Arg.Is<string>("testrepo"))
                 .Returns(Enumerable.Empty<SlackActionModel>());
