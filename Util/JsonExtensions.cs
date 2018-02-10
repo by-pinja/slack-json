@@ -27,7 +27,7 @@ namespace Slack.Json.Util
                         throw new InvalidOperationException($"No defined conversion for JSON object {result.GetType()}");
                 }
             }
-            catch(RuntimeBinderException ex)
+            catch(RuntimeBinderException)
             {
                 throw new InvalidOperationException($"Invalid path before last from JSON {callerFile}:{callerLine}");
             }

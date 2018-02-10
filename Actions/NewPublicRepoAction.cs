@@ -46,6 +46,7 @@ namespace Slack.Json.Actions
                     this.slack.Send(action.Channel,
                         new SlackMessageModel($"New public repository '{owner}/{repo}'", repoHtmlUrl)
                         {
+                            Text = ":thumbsup: if looks good, :thumbsdown: if not.",
                             Color = "warning"
                         });
                 });
