@@ -21,5 +21,6 @@ namespace Slack.Json.Tests.GithubRequestPayloads
         public static JObject NewIssue() => JObject.Parse(GetContent("newIssue.json"));
         public static JObject ReviewSubmit() => JObject.Parse(GetContent("reviewSubmit.json"));
         public static JObject NewPublicRepository() => JObject.Parse(GetContent("createPublicRepo.json"));
+        public static JObject NewLabelOnPullRequest() => JObject.Parse(GetContent("pullRequestLabeled.json"));
     }
 }
