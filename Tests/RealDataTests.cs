@@ -125,5 +125,17 @@ namespace Slack.Json.Tests
                 .Assert(slack =>
                     slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<SlackMessageModel>()));
         }
+
+        [Fact]
+        public void WhenJenkinsBuildFails_ThenSendMessage()
+        {
+            ActionTestBuilder<JenkinsBuildFailAction>
+                .Create((slack, logger) => new JenkinsBuildFailAction(slack, logger))
+                .ExecuteWith("jenkinsBuildFailure.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "status", requestAction: "")
+                .AssertSlackJsonTypeIs("jenkins_build_error")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
     }
 }
