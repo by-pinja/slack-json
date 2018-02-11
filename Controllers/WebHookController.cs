@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Slack.Json.Actions;
+using Slack.Json.Util;
 
 namespace Slack.Json.Controllers
 {
@@ -27,9 +28,7 @@ namespace Slack.Json.Controllers
             [FromHeader(Name = "X-Hub-Signature")] string signature,
             [FromBody] JObject content)
         {
-            this.logger.LogInformation($"Event {eventType} received with content: {content.ToString()}");
-
-            var action = content["action"]?.Value<string>() ?? "UNKNOWN";
+            var action = content.Get(x => x.action);
 
             var actions = this.actionFactory.Resolve(eventType, action);
 
