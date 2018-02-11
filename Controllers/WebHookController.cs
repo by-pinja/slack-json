@@ -31,7 +31,7 @@ namespace Slack.Json.Controllers
             [FromHeader(Name = "X-Hub-Signature")] string signature,
             [FromBody] JObject content)
         {
-            var action = content.Get(x => x.action);
+            var action = content["action"]?.Value<string>() ?? "";
 
             var actions = this.actionFactory.Resolve(eventType, action);
 
