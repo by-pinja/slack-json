@@ -30,7 +30,7 @@ namespace Slack.Json.Tests
             return this;
         }
 
-        public ActionTestBuilder<T> Passing(Action<ISlackMessaging> asserter)
+        public ActionTestBuilder<T> Assert(Action<ISlackMessaging> asserter)
         {
             asserter.Invoke(this.messaging);
             return this;

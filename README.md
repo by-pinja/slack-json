@@ -28,37 +28,66 @@ docker run -it \
 ## Slack configuration
 1. Create new 'Incoming webhook' app and set 'Webhook URL' to appsettings.json or environment variable `SlackIntegrationUri`.
 
-# slack.json format
+# slack.json
 Add file `slack.json` to repository root folder.
 
+Action structure:
+```json
+{
+    "type": "this_is_type",
+    "channel": "#ThisIsTargetChannel",
+    "enabled": true,
+    "data": [ "somedata" ]
+}
+```
+
+Only `type` and `channel` are mandatory. Enabled defaults to true if not set and data is available only on few configurations.
+
+## Global configuration
+App supports globally configured actions which are invoked on every repository event when slack.json is missing. Use `GlobalSlackJson` on environment variable or configuration file to support this scenario.
+
+## Supported types
+| Type                        | Description                                                   | Misc                    |
+| --------------------------- | --------------------------------------------------------      | ----------------------- |
+| new_issue                   | Get notification when new issue is posted to repository.      |                         |
+| new_public_repository       | Notifies channel when new public repository is created.       | This must be enabled globally, not allowed on repository basis configuration. |
+| pull_request                | Notifies channel about new pull requests on repository.       |                         |
+| review_request              | Notifies channel about new review requests on repository.     |                         |
+| review_status               | Notifies channel about updates on reviews, like reviewed or needs fix. | |
+| issue_label                 | Notifies channel about labels on issues. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |
+| pullrequest_label           | Notifies channel about new labels on pull requests. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |
+
+## Full example
 ```json
 {
     "version": "1",
     "actions": [
+        {
+            "type": "new_issue",
+            "channel": "#best_project"
+        },
+        {
+            "type": "new_issue",
+            "channel": "#anotherChannel"
+        },
         {
             "type": "pull_request",
             "channel": "#best_project"
         },
         {
             "type": "review_request",
-            "channel": "#best_project"
-        },
-        {
-            "type": "review_status",
-            "channel": "#best_project"
-        },
-        {
-            "type": "pull_request",
             "channel": "#best_devops_channel_ever"
         },
         {
-            "type": "build_failure",
-            "channel": "#best_devops_channel_ever"
+            "type": "issue_label",
+            "channel": "#lotsOfBugsChannel",
+            "enabled": true,
+            "data": [ "bug" ]
         },
         {
-            "type": "build_failure",
-            "channel": "#jenkins",
-            "enabled": false
+            "type": "pullrequest_label",
+            "channel": "#evochannel",
+            "data": [ "needs help" ]
         }
     ]
 }

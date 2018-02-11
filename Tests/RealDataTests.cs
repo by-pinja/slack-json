@@ -15,9 +15,10 @@ namespace Slack.Json.Tests
         {
             ActionTestBuilder<NewIssueAction>
                 .Create((slack, logger) => new NewIssueAction(slack, logger))
-                .AssertInvokedOn(requestType: "issues", requestAction: "opened")
                 .ExecuteWith("newIssue.json", slackChannels: "#general")
-                .Passing(slack =>
+                .AssertInvokedOn(requestType: "issues", requestAction: "opened")
+                .AssertSlackJsonTypeIs("new_issue")
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -26,9 +27,10 @@ namespace Slack.Json.Tests
         {
             ActionTestBuilder<NewPublicRepoAction>
                 .Create((slack, logger) => new NewPublicRepoAction(slack, logger))
-                .AssertInvokedOn(requestType: "repository", requestAction: "created")
                 .ExecuteWith("createPublicRepo.json", slackChannels: "#general")
-                .Passing(slack =>
+                .AssertSlackJsonTypeIs("new_public_repository")
+                .AssertInvokedOn(requestType: "repository", requestAction: "created")
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -37,9 +39,10 @@ namespace Slack.Json.Tests
         {
             ActionTestBuilder<PullRequestAction>
                 .Create((slack, logger) => new PullRequestAction(slack, logger))
-                .AssertInvokedOn(requestType: "pull_request", requestAction: "opened")
                 .ExecuteWith("pullRequest.json", slackChannels: "#general")
-                .Passing(slack =>
+                .AssertSlackJsonTypeIs("pull_request")
+                .AssertInvokedOn(requestType: "pull_request", requestAction: "opened")
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -48,9 +51,10 @@ namespace Slack.Json.Tests
         {
             ActionTestBuilder<ReviewRequestAction>
                 .Create((slack, logger) => new ReviewRequestAction(slack, logger))
-                .AssertInvokedOn(requestType: "pull_request", requestAction: "review_requested")
                 .ExecuteWith("reviewRequest.json", slackChannels: "#general")
-                .Passing(slack =>
+                .AssertInvokedOn(requestType: "pull_request", requestAction: "review_requested")
+                .AssertSlackJsonTypeIs("review_request")
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -59,9 +63,10 @@ namespace Slack.Json.Tests
         {
             ActionTestBuilder<ReviewStatusAction>
                 .Create((slack, logger) => new ReviewStatusAction(slack, logger))
-                .AssertInvokedOn(requestType: "pull_request_review", requestAction: "submitted")
                 .ExecuteWith("reviewSubmit.json", slackChannels: "#general")
-                .Passing(slack =>
+                .AssertInvokedOn(requestType: "pull_request_review", requestAction: "submitted")
+                .AssertSlackJsonTypeIs("review_status")
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -73,7 +78,7 @@ namespace Slack.Json.Tests
                 .ExecuteWith("newLabelOnIssue.json", slackChannels: "#general")
                 .AssertInvokedOn(requestType: "issues", requestAction: "labeled")
                 .AssertSlackJsonTypeIs("issue_label")
-                .Passing(slack =>
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -89,7 +94,7 @@ namespace Slack.Json.Tests
                         Channel = "#general",
                         Data = new JArray("this_doesnt_match")
                     })
-                .Passing(slack =>
+                .Assert(slack =>
                     slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<SlackMessageModel>()));
         }
 
@@ -101,7 +106,7 @@ namespace Slack.Json.Tests
                 .ExecuteWith("pullRequestLabeled.json", slackChannels: "#general")
                 .AssertInvokedOn(requestType: "pull_request", requestAction: "labeled")
                 .AssertSlackJsonTypeIs("pullrequest_label")
-                .Passing(slack =>
+                .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
@@ -117,7 +122,7 @@ namespace Slack.Json.Tests
                         Channel = "#general",
                         Data = new JArray("this_doesnt_match")
                     })
-                .Passing(slack =>
+                .Assert(slack =>
                     slack.DidNotReceive().Send(Arg.Any<string>(), Arg.Any<SlackMessageModel>()));
         }
     }
