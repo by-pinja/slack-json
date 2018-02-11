@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -17,6 +18,7 @@ namespace Slack.Json.Tests.GithubRequestPayloads
 
         public static JObject PullRequestOpened() => JObject.Parse(GetContent("pullRequest.json"));
         public static JObject ReviewRequestOpened() => JObject.Parse(GetContent("reviewRequest.json"));
+        public static JObject NewIssue() => JObject.Parse(GetContent("newIssue.json"));
         public static JObject ReviewSubmit() => JObject.Parse(GetContent("reviewSubmit.json"));
         public static JObject NewPublicRepository() => JObject.Parse(GetContent("createPublicRepo.json"));
     }

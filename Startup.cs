@@ -50,6 +50,7 @@ namespace Slack.Json
             services.AddTransient<ReviewRequestAction>();
             services.AddTransient<ReviewStatusAction>();
             services.AddTransient<NewPublicRepoAction>();
+            services.AddTransient<NewIssueAction>();
             services.AddTransient<ActionFactory>();
         }
 
