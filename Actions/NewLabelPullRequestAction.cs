@@ -9,7 +9,7 @@ namespace Slack.Json.Actions
 {
     public class NewLabelPullRequestAction : IRequestAction
     {
-        public string RequestType => "pullrequest";
+        public string RequestType => "pull_request";
         public string RequestAction => "labeled";
         private readonly string type = "pullrequest_label";
         private ISlackActionFetcher fetcher;

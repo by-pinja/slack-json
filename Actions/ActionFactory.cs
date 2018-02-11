@@ -17,7 +17,8 @@ namespace Slack.Json.Actions
                 (IRequestAction)services.GetService(typeof(ReviewRequestAction)),
                 (IRequestAction)services.GetService(typeof(ReviewStatusAction)),
                 (IRequestAction)services.GetService(typeof(NewPublicRepoAction)),
-                (IRequestAction)services.GetService(typeof(NewIssueAction))
+                (IRequestAction)services.GetService(typeof(NewIssueAction)),
+                (IRequestAction)services.GetService(typeof(NewLabelPullRequestAction))
             };
         }
 
