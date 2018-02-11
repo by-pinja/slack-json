@@ -53,6 +53,7 @@ namespace Slack.Json
             services.AddTransient<NewIssueAction>();
             services.AddTransient<NewLabelPullRequestAction>();
             services.AddTransient<NewLabelOnIssueAction>();
+            services.AddTransient<JenkinsBuildFailAction>();
 
             services.AddTransient<ActionFactory>();
         }

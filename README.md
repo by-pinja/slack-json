@@ -56,6 +56,7 @@ App supports globally configured actions which are invoked on every repository e
 | review_status               | Notifies channel about updates on reviews, like reviewed or needs fix. | |
 | issue_label                 | Notifies channel about labels on issues. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |
 | pullrequest_label           | Notifies channel about new labels on pull requests. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |
+| jenkins_build_error         | Jenkins ci build failed. |  |
 
 ## Full example
 ```json
