@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -11,34 +12,27 @@ namespace Slack.Json.Actions
     {
         public string RequestType => "pull_request";
         public string RequestAction => "labeled";
-        private readonly string type = "pullrequest_label";
-        private ISlackActionFetcher fetcher;
-        private ISlackMessaging slack;
-        private ILogger<NewPublicRepoAction> logger;
+        public string Type => "pullrequest_label";
 
-        public NewLabelPullRequestAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<NewPublicRepoAction> logger)
+        private ISlackMessaging slack;
+        private ILogger<NewLabelPullRequestAction> logger;
+
+        public NewLabelPullRequestAction(ISlackMessaging slack, ILogger<NewLabelPullRequestAction> logger)
         {
-            this.fetcher = fetcher;
             this.slack = slack;
             this.logger = logger;
         }
 
-        public void Execute(JObject request)
+        public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            ActionUtils.ParsePullRequestDefaultFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
             var label = request.Get(x => x.label.name);
 
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
-                .Where(slackJsonAction => slackJsonAction.Type == this.type)
+            actions
                 .Where(slackJsonAction =>
                     slackJsonAction.Data == null ||
                     slackJsonAction.Data.Value<JArray>().Any(x => x.Value<string>() == label))
-                .ToList();
-
-            if (!slackFile.Any())
-                return;
-
-            slackFile
+                .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");

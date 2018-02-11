@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -11,19 +12,18 @@ namespace Slack.Json.Actions
     {
         public string RequestType => "issues";
         public string RequestAction => "opened";
-        private readonly string type = "new_issue";
-        private ISlackActionFetcher fetcher;
-        private ISlackMessaging slack;
-        private ILogger<NewPublicRepoAction> logger;
+        public string Type => "new_issue";
 
-        public NewIssueAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<NewPublicRepoAction> logger)
+        private ISlackMessaging slack;
+        private ILogger<NewIssueAction> logger;
+
+        public NewIssueAction(ISlackMessaging slack, ILogger<NewIssueAction> logger)
         {
-            this.fetcher = fetcher;
             this.slack = slack;
             this.logger = logger;
         }
 
-        public void Execute(JObject request)
+        public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
             var issueHtmlUrl = request.Get(x => x.issue.html_url);
             var opener = request.Get(x => x.issue.user.login);
@@ -33,14 +33,8 @@ namespace Slack.Json.Actions
             var repo = request.Get(x => x.repository.name);
             var owner = request.Get(x => x.repository.owner.login);
 
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
-                .Where(slackJsonAction => slackJsonAction.Type == this.type)
-                .ToList();
-
-            if (!slackFile.Any())
-                return;
-
-            slackFile
+            actions
+                .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");

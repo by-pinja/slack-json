@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -10,36 +11,29 @@ namespace Slack.Json.Actions
 {
     public class ReviewRequestAction: IRequestAction
     {
-        private ISlackActionFetcher fetcher;
         private ISlackMessaging slack;
-        private ILogger<PullRequestAction> logger;
+        private ILogger<ReviewRequestAction> logger;
         private readonly string type = "review_request";
 
-        public ReviewRequestAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<PullRequestAction> logger)
+        public ReviewRequestAction(ISlackMessaging slack, ILogger<ReviewRequestAction> logger)
         {
-            this.fetcher = fetcher;
             this.slack = slack;
             this.logger = logger;
         }
 
         public string RequestType => "pull_request";
         public string RequestAction => "review_requested";
+        public string Type => "review_request";
 
-        public void Execute(JObject request)
+        public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            ActionUtils.ParsePullRequestDefaultFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
-
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
-                .Where(slackJsonAction => slackJsonAction.Type == this.type)
-                .ToList();
-
-            if (!slackFile.Any())
-                return;
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
             var reviewers = request.Get<JArray>(x => x.pull_request.requested_reviewers)
                     .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_reviewers.login"));
 
-            slackFile
+            actions
+                .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");

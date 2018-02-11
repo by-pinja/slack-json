@@ -28,13 +28,13 @@ namespace Slack.Json.Github
             this.logger = logger;
         }
 
-        public IEnumerable<SlackActionModel> GetJsonIfAny(string owner, string repo)
+        public IEnumerable<SlackActionModel> GetSlackActions(string repoFullName)
         {
             try
             {
                 var client = RestClient.For<IGitHubApi>("https://api.github.com");
 
-                var result = client.TryGetSlackJson($"token {this.accessToken}", owner, repo).Result;
+                var result = client.TryGetSlackJson($"token {this.accessToken}", repoFullName).Result;
 
                 return result.Actions?
                     .Concat(this.globalActions ?? Enumerable.Empty<SlackActionModel>())
@@ -43,7 +43,7 @@ namespace Slack.Json.Github
             catch (AggregateException ex)
                 when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
             {
-                this.logger.LogInformation($"Checked slack.json for '{owner}/{repo} but no slack.json file defined.'");
+                this.logger.LogInformation($"Checked slack.json for '{repoFullName} but no slack.json file defined.'");
                 return Enumerable.Empty<SlackActionModel>();
             }
         }
