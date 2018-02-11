@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Slack.Json.Actions;
 using Slack.Json.Slack;
-using Slack.Json.Tests.GithubRequestPayloads;
 using Xunit;
 
 namespace Slack.Json.Tests
