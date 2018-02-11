@@ -39,7 +39,7 @@ namespace Slack.Json.Actions
                     this.slack.Send(action.Channel,
                         new SlackMessageModel($"New label '{label}' on pull request '{prTitle}'", prHtmlUrl)
                         {
-                            Color = "#439FE0"
+                            Color = $"#{request.Get(x => x.label.color)}"
                         });
                 });
         }
