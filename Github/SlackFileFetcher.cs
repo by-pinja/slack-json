@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -28,13 +29,15 @@ namespace Slack.Json.Github
             this.logger = logger;
         }
 
-        public IEnumerable<SlackActionModel> GetJsonIfAny(string owner, string repo)
+        public IEnumerable<SlackActionModel> GetSlackActions(string repoFullName)
         {
             try
             {
+                var repoInfo = GetOwnerAndRepo(repoFullName);
+
                 var client = RestClient.For<IGitHubApi>("https://api.github.com");
 
-                var result = client.TryGetSlackJson($"token {this.accessToken}", owner, repo).Result;
+                var result = client.TryGetSlackJson($"token {this.accessToken}", repoInfo.owner, repoInfo.repo).Result;
 
                 return result.Actions?
                     .Concat(this.globalActions ?? Enumerable.Empty<SlackActionModel>())
@@ -43,9 +46,16 @@ namespace Slack.Json.Github
             catch (AggregateException ex)
                 when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
             {
-                this.logger.LogInformation($"Checked slack.json for '{owner}/{repo} but no slack.json file defined.'");
+                this.logger.LogInformation($"Checked slack.json for '{repoFullName} but no slack.json file defined.'");
                 return Enumerable.Empty<SlackActionModel>();
             }
+        }
+
+        private static (string owner, string repo) GetOwnerAndRepo(string repoFullName)
+        {
+            var tokens = repoFullName.Split("/");
+            tokens.Length.Should().Be(2);
+            return (tokens[0], tokens[1]);
         }
     }
 }

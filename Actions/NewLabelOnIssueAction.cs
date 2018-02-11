@@ -8,40 +8,40 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class NewIssueAction : IRequestAction
+    public class NewLabelOnIssueAction : IRequestAction
     {
-        public string RequestType => "issues";
-        public string RequestAction => "opened";
-        public string Type => "new_issue";
-
         private ISlackMessaging slack;
-        private ILogger<NewIssueAction> logger;
+        private ILogger<NewLabelOnIssueAction> logger;
 
-        public NewIssueAction(ISlackMessaging slack, ILogger<NewIssueAction> logger)
+        public NewLabelOnIssueAction(ISlackMessaging slack, ILogger<NewLabelOnIssueAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
         }
 
+        public string RequestType => "issues";
+        public string RequestAction => "labeled";
+
+        public string Type => "issue_label";
+
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            var label = request.Get(x => x.label.name);
             var issueHtmlUrl = request.Get(x => x.issue.html_url);
-            var opener = request.Get(x => x.issue.user.login);
-            var issueBody = request.Get(x => x.issue.body);
             var title = request.Get(x => x.issue.title);
 
-            var repo = request.Get(x => x.repository.name);
-            var owner = request.Get(x => x.repository.owner.login);
-
             actions
+                .Where(slackJsonAction =>
+                    slackJsonAction.Data == null ||
+                    slackJsonAction.Data.Value<JArray>().Any(x => x.Value<string>() == label))
                 .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New issue '{title}' from '{opener}'", issueHtmlUrl)
+                        new SlackMessageModel($"New label '{label}' on issue '{title}'", issueHtmlUrl)
                         {
-                            Text = issueBody
+                            Color = $"#{request.Get(x => x.label.color)}"
                         });
                 });
         }

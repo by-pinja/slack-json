@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -10,32 +11,22 @@ namespace Slack.Json.Actions
 {
     public class ReviewStatusAction : IRequestAction
     {
-        private readonly ISlackActionFetcher fetcher;
         private readonly ISlackMessaging slack;
-        private readonly ILogger<PullRequestAction> logger;
-        private readonly string type = "review_status";
+        private readonly ILogger<ReviewStatusAction> logger;
 
-        public ReviewStatusAction(ISlackActionFetcher fetcher, ISlackMessaging slack, ILogger<PullRequestAction> logger)
+        public ReviewStatusAction(ISlackMessaging slack, ILogger<ReviewStatusAction> logger)
         {
-            this.fetcher = fetcher;
             this.slack = slack;
             this.logger = logger;
         }
 
         public string RequestType => "pull_request_review";
-
         public string RequestAction => "submitted";
+        public string Type => "review_status";
 
-        public void Execute(JObject request)
+        public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            ActionUtils.ParsePullRequestDefaultFields(request, out var repo, out var owner, out var prHtmlUrl, out var prTitle);
-
-            var slackFile = this.fetcher.GetJsonIfAny(owner, repo)
-                .Where(slackJsonAction => slackJsonAction.Type == this.type)
-                .ToList();
-
-            if (!slackFile.Any())
-                return;
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
             var reviewState = request.Get(x => x.review.state);
             var reviewer = request.Get(x => x.review.user.login);
@@ -43,10 +34,11 @@ namespace Slack.Json.Actions
 
             var stateVariable = GetStateVariable(reviewState);
 
-            slackFile
+            actions
+                .ToList()
                 .ForEach(action =>
                 {
-                    this.slack.Send(action.Channel, new SlackMessageModel($"Reviewer '{reviewer}' {stateVariable.verb} changes for '{prTitle}'", prHtmlUrl)
+                    this.slack.Send(action.Channel, new SlackMessageModel($"Reviewer {reviewer} {stateVariable.verb} changes for '{prTitle}'", prHtmlUrl)
                     {
                         Color = stateVariable.color,
                         Text = reviewBody
