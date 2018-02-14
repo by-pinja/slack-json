@@ -47,7 +47,7 @@ namespace Slack.Json.Github
                 when (ex.InnerException is RestEase.ApiException restEx && restEx.StatusCode == HttpStatusCode.NotFound)
             {
                 this.logger.LogInformation($"Checked slack.json for '{repoFullName} but no slack.json file defined.'");
-                return Enumerable.Empty<SlackActionModel>();
+                return this.globalActions ?? Enumerable.Empty<SlackActionModel>();
             }
         }
 
