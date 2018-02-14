@@ -13,7 +13,6 @@ namespace Slack.Json.Actions
     {
         private ISlackMessaging slack;
         private ILogger<ReviewRequestAction> logger;
-        private readonly string type = "review_request";
 
         public ReviewRequestAction(ISlackMessaging slack, ILogger<ReviewRequestAction> logger)
         {
