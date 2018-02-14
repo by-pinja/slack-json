@@ -34,13 +34,13 @@ spec:
           - configMapRef:
               name: slack-json-config
         env:
-          - name: GlobalSlackJson__0__type
-            value: jenkins_build_error
-          - name: GlobalSlackJson__0__channel
+          - name: "GlobalSlackJson:0:type"
+            value: "jenkins_build_error"
+          - name: "GlobalSlackJson:0:channel"
             value: "#jenkins"
-          - name: GlobalSlackJson__1__type
+          - name: "GlobalSlackJson:1:type"
             value: new_public_repository
-          - name: GlobalSlackJson__1__channel
+          - name: "GlobalSlackJson:1:channel"
             value: "#arkkitehdit"
 ---
 
