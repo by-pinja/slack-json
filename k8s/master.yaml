@@ -38,7 +38,7 @@ spec:
           - name: GlobalSlackJson__0__channel
             value: "#jenkins"
           - name: GlobalSlackJson__1__type
-            value: new_public_repository
+            value: new_repository
           - name: GlobalSlackJson__1__channel
             value: "#arkkitehdit"
 ---

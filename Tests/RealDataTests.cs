@@ -25,10 +25,10 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenNewPublicRepoIsCreated_ThenSendMessage()
         {
-            ActionTestBuilder<NewPublicRepoAction>
-                .Create((slack, logger) => new NewPublicRepoAction(slack, logger))
+            ActionTestBuilder<NewRepoAction>
+                .Create((slack, logger) => new NewRepoAction(slack, logger))
                 .ExecuteWith("createPublicRepo.json", slackChannels: "#general")
-                .AssertSlackJsonTypeIs("new_public_repository")
+                .AssertSlackJsonTypeIs("new_repository")
                 .AssertInvokedOn(requestType: "repository", requestAction: "created")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -9,12 +9,12 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class NewPublicRepoAction : IRequestAction
+    public class NewRepoAction : IRequestAction
     {
         private ISlackMessaging slack;
-        private ILogger<NewPublicRepoAction> logger;
+        private ILogger<NewRepoAction> logger;
 
-        public NewPublicRepoAction(ISlackMessaging slack, ILogger<NewPublicRepoAction> logger)
+        public NewRepoAction(ISlackMessaging slack, ILogger<NewRepoAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -22,7 +22,7 @@ namespace Slack.Json.Actions
 
         public string RequestType => "repository";
         public string RequestAction => "created";
-        public string Type => "new_public_repository";
+        public string Type => "new_repository";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
@@ -35,10 +35,10 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New public repository {fullName}", repoHtmlUrl)
+                        new SlackMessageModel($"New repository {fullName}", repoHtmlUrl)
                         {
-                            Text = ":thumbsup: if looks good, :thumbsdown: if not.",
-                            Color = "warning"
+                            Text = ":thumbsup: looks good or :thumbsdown:",
+                            Color = "warning",
                         });
                 });
         }
