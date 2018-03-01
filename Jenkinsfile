@@ -1,32 +1,23 @@
-@Library("PTCSLibrary@1.0.3") _
+library 'jenkins-ptcs-library@docker-depencies'
 
-// Podtemplate and node must match, dont use generic names like 'node', use more specific like projectname or node + excact version number.
-// This is because CI environment reuses templates based on naming, if you create node 7 environment with name 'node', following node 8 environment
-// builds may fail because they reuse same environment if label matches existing.
-podTemplate(label: 'slack-integration',
-  containers: [
-    containerTemplate(name: 'dotnet', image: 'microsoft/aspnetcore-build:2', ttyEnabled: true, command: '/bin/sh -c', args: 'cat'),
-    containerTemplate(name: 'docker', image: 'ptcos/docker-client:1.1.32', alwaysPullImage: true, ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
+podTemplate(label: pod.label,
+  containers: pod.templates + [
+    containerTemplate(name: 'dotnet', image: 'microsoft/aspnetcore-build:2', ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
   ]
 ) {
-    def project = 'slack-integration'
     def branch = (env.BRANCH_NAME)
-    def namespace = "slack-integration"
-    def notifyslackchannel = "#jenkins"
 
-    node('slack-integration') {
+    node(pod.label) {
         stage('Checkout') {
             checkout_with_tags()
         }
-        stage('Build') {
-            container('dotnet') {
+        container('dotnet') {
+            stage('Build') {
                 sh """
                     dotnet publish -c Release -o out
                 """
             }
-        }
-        stage('Test') {
-            container('dotnet') {
+            stage('Test') {
                 sh """
                     dotnet test
                 """
@@ -45,14 +36,15 @@ podTemplate(label: 'slack-integration',
                         image.push(env.GIT_TAG_NAME)
                     }
                 }
-
-                if(branch == "master")
-                {
-                    toK8sTestEnv() {
-                        sh """
-                            kubectl apply -f ./k8s/master.yaml
-                        """
-                    }
+            }
+        }
+        stage('apply') {
+            if(branch == "master")
+            {
+                toK8sTestEnv() {
+                    sh """
+                        kubectl apply -f ./k8s/master.yaml
+                    """
                 }
             }
         }
