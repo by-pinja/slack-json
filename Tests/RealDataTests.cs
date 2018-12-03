@@ -137,5 +137,17 @@ namespace Slack.Json.Tests
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
+
+        [Fact]
+        public void WhenSecurityVulnerabilityIsFound_ThenSendMessage()
+        {
+            ActionTestBuilder<VulnerabilityAlertAction>
+                .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
+                .ExecuteWith("vulnerabilityAlert.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "repository_vulnerability_alert", requestAction: "create")
+                .AssertSlackJsonTypeIs("repository_vulnerability_alert")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
     }
 }
