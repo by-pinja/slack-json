@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using Slack.Json.Actions;
@@ -146,6 +147,18 @@ namespace Slack.Json.Tests
                 .ExecuteWith("jenkinsBuildFailure.json", slackChannels: "#general")
                 .AssertInvokedOn(requestType: "status", requestAction: "")
                 .AssertSlackJsonTypeIs("jenkins_build_error")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenJenkinsTagBuildIsSuccess_ThenSendmessage()
+        {
+            ActionTestBuilder<JenkinsTagBuildAction>
+                .Create((slack, logger) => new JenkinsTagBuildAction(slack, logger, Options.Create(new AppOptions { TagBuildUrlContains = "tag" })))
+                .ExecuteWith("jenkinsTagBuildSuccess.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "status", requestAction: "")
+                .AssertSlackJsonTypeIs("jenkins_build_tag")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
