@@ -37,8 +37,8 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenNewReleaseIsCreated_ThenSendMessage()
         {
-            ActionTestBuilder<NewRelease>
-                .Create((slack, logger) => new NewRelease(slack, logger))
+            ActionTestBuilder<NewReleaseAction>
+                .Create((slack, logger) => new NewReleaseAction(slack, logger))
                 .ExecuteWith("newRelease.json", slackChannels: "#general")
                 .AssertSlackJsonTypeIs("new_release")
                 .AssertInvokedOn(requestType: "release", requestAction: "published")
