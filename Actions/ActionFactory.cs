@@ -24,9 +24,9 @@ namespace Slack.Json.Actions
             };
         }
 
-        public IEnumerable<IRequestAction> Resolve(string requestAction, string action)
+        public IEnumerable<IRequestAction> Resolve(string githubHookEventName, string actionFieldFromEvent)
         {
-            return actions.Where(x => x.RequestType == requestAction && x.RequestAction == action);
+            return actions.Where(x => x.GithubHookEventName == githubHookEventName && x.GithubHookActionField == actionFieldFromEvent);
         }
     }
 }

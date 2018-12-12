@@ -19,9 +19,9 @@ namespace Slack.Json.Actions
             this.logger = logger;
         }
 
-        public string RequestType => "pull_request";
-        public string RequestAction => "opened";
-        public string Type => "pull_request";
+        public string GithubHookEventName => "pull_request";
+        public string GithubHookActionField => "opened";
+        public string SlackJsonType => "pull_request";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {

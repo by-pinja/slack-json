@@ -19,10 +19,10 @@ namespace Slack.Json.Actions
             this.logger = logger;
         }
 
-        public string RequestType => "issues";
-        public string RequestAction => "labeled";
+        public string GithubHookEventName => "issues";
+        public string GithubHookActionField => "labeled";
 
-        public string Type => "issue_label";
+        public string SlackJsonType => "issue_label";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {

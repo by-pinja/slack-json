@@ -51,6 +51,7 @@ App supports globally configured actions which are invoked on every repository e
 | --------------------------- | --------------------------------------------------------      | ----------------------- |
 | new_issue                   | Get notification when new issue is posted to repository.      |                         |
 | new_repository              | Notifies channel when new repository is created.       | This must be enabled globally, not allowed on repository basic configuration. |
+| new_release                 | Notifies channel when new release is created.          |                         |
 | pull_request                | Notifies channel about new pull requests on repository.       |                         |
 | review_request              | Notifies channel about new review requests on repository.     |                         |
 | review_status               | Notifies channel about updates on reviews, like reviewed or needs fix. | |
@@ -69,6 +70,10 @@ App supports globally configured actions which are invoked on every repository e
         },
         {
             "type": "new_issue",
+            "channel": "#anotherChannel"
+        },
+        {
+            "type": "new_release",
             "channel": "#anotherChannel"
         },
         {

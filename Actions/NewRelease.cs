@@ -8,16 +8,16 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class NewIssueAction : IRequestAction
+    public class NewRelease : IRequestAction
     {
-        public string GithubHookEventName => "issues";
-        public string GithubHookActionField => "opened";
-        public string SlackJsonType => "new_issue";
+        public string GithubHookEventName => "release";
+        public string GithubHookActionField => "published";
+        public string SlackJsonType => "new_release";
 
-        private ISlackMessaging slack;
-        private ILogger<NewIssueAction> logger;
+        private readonly ISlackMessaging slack;
+        private readonly ILogger<NewRelease> logger;
 
-        public NewIssueAction(ISlackMessaging slack, ILogger<NewIssueAction> logger)
+        public NewRelease(ISlackMessaging slack, ILogger<NewRelease> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -25,10 +25,10 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            var issueHtmlUrl = request.Get(x => x.issue.html_url);
-            var opener = request.Get(x => x.issue.user.login);
-            var issueBody = request.Get(x => x.issue.body);
-            var title = request.Get(x => x.issue.title);
+            var issueHtmlUrl = request.Get(x => x.release.html_url);
+            var author = request.Get(x => x.release.author.login);
+            var issueBody = request.Get(x => x.release.body);
+            var name = request.Get(x => x.release.name);
 
             var repo = request.Get(x => x.repository.name);
             var owner = request.Get(x => x.repository.owner.login);
@@ -39,7 +39,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New issue '{title}' from '{opener}'", issueHtmlUrl)
+                        new SlackMessageModel($"New release '{name}' from '{author}'", issueHtmlUrl)
                         {
                             Text = issueBody
                         });

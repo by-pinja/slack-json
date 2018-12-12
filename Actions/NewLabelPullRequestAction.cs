@@ -10,9 +10,9 @@ namespace Slack.Json.Actions
 {
     public class NewLabelPullRequestAction : IRequestAction
     {
-        public string RequestType => "pull_request";
-        public string RequestAction => "labeled";
-        public string Type => "pullrequest_label";
+        public string GithubHookEventName => "pull_request";
+        public string GithubHookActionField => "labeled";
+        public string SlackJsonType => "pullrequest_label";
 
         private ISlackMessaging slack;
         private ILogger<NewLabelPullRequestAction> logger;
