@@ -58,6 +58,7 @@ App supports globally configured actions which are invoked on every repository e
 | issue_label                 | Notifies channel about labels on issues. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |
 | pullrequest_label           | Notifies channel about new labels on pull requests. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |
 | jenkins_build_error         | Jenkins ci build failed. |  |
+| jenkins_build_tag           | When tag is built on jenkins notifications of states like success, pending and error is sent. |  |
 
 ## Full example
 ```json
