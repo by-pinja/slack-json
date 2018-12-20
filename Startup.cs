@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Slack.Json.Github;
 using Slack.Json.Actions;
 using Slack.Json.Slack;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace Slack.Json
 {
@@ -30,10 +30,10 @@ namespace Slack.Json
         {
             services.AddSwaggerGen(c =>
             {
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var basePath = AppContext.BaseDirectory;
 
                 c.SwaggerDoc("v1",
-                    new Info
+                    new OpenApiInfo
                     {
                         Title = "Slack integration",
                         Version = "v1",
