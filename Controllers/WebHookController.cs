@@ -43,7 +43,7 @@ namespace Slack.Json.Controllers
             actions.ToList()
                 .ForEach(a => a.Execute(
                     content,
-                    slackActions.Where(s => s.Enabled && s.Type == a.Type)));
+                    slackActions.Where(s => s.Enabled && s.Type == a.SlackJsonType)));
 
             return Ok();
         }
