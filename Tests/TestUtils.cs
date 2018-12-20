@@ -26,7 +26,7 @@ namespace Slack.Json.Tests
 
         public ActionTestBuilder<T> AssertSlackJsonTypeIs(string type)
         {
-            this.action.Type.Should().Be(type);
+            this.action.SlackJsonType.Should().Be(type);
             return this;
         }
 
@@ -58,8 +58,8 @@ namespace Slack.Json.Tests
 
         public ActionTestBuilder<T> AssertInvokedOn(string requestType, string requestAction)
         {
-            this.action.RequestType.Should().Be(requestType);
-            this.action.RequestAction.Should().Be(requestAction);
+            this.action.GithubHookEventName.Should().Be(requestType);
+            this.action.GithubHookActionField.Should().Be(requestAction);
             return this;
         }
 

@@ -18,15 +18,16 @@ namespace Slack.Json.Actions
                 (IRequestAction)services.GetService(typeof(ReviewStatusAction)),
                 (IRequestAction)services.GetService(typeof(NewRepoAction)),
                 (IRequestAction)services.GetService(typeof(NewIssueAction)),
+                (IRequestAction)services.GetService(typeof(NewReleaseAction)),
                 (IRequestAction)services.GetService(typeof(NewLabelPullRequestAction)),
                 (IRequestAction)services.GetService(typeof(NewLabelOnIssueAction)),
                 (IRequestAction)services.GetService(typeof(JenkinsBuildFailAction))
             };
         }
 
-        public IEnumerable<IRequestAction> Resolve(string requestAction, string action)
+        public IEnumerable<IRequestAction> Resolve(string githubHookEventName, string actionFieldFromEvent)
         {
-            return actions.Where(x => x.RequestType == requestAction && x.RequestAction == action);
+            return actions.Where(x => x.GithubHookEventName == githubHookEventName && x.GithubHookActionField == actionFieldFromEvent);
         }
     }
 }

@@ -20,9 +20,9 @@ namespace Slack.Json.Actions
             this.logger = logger;
         }
 
-        public string RequestType => "pull_request_review";
-        public string RequestAction => "submitted";
-        public string Type => "review_status";
+        public string GithubHookEventName => "pull_request_review";
+        public string GithubHookActionField => "submitted";
+        public string SlackJsonType => "review_status";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {

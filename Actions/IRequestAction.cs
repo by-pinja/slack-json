@@ -6,9 +6,9 @@ namespace Slack.Json.Actions
 {
     public interface IRequestAction
     {
-        string RequestType { get; }
-        string RequestAction { get; }
-        string Type { get; }
+        string GithubHookEventName { get; }
+        string GithubHookActionField { get; }
+        string SlackJsonType { get; }
         void Execute(JObject request, IEnumerable<ISlackAction> actions);
     }
 }

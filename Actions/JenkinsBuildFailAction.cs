@@ -10,8 +10,8 @@ namespace Slack.Json.Actions
 {
     public class JenkinsBuildFailAction : IRequestAction
     {
-        private ISlackMessaging slack;
-        private ILogger<JenkinsBuildFailAction> logger;
+        private readonly ISlackMessaging slack;
+        private readonly ILogger<JenkinsBuildFailAction> logger;
 
         public JenkinsBuildFailAction(ISlackMessaging slack, ILogger<JenkinsBuildFailAction> logger)
         {
@@ -19,11 +19,11 @@ namespace Slack.Json.Actions
             this.logger = logger;
         }
 
-        public string RequestType => "status";
+        public string GithubHookEventName => "status";
 
-        public string RequestAction => "";
+        public string GithubHookActionField => "";
 
-        public string Type => "jenkins_build_error";
+        public string SlackJsonType => "jenkins_build_error";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
