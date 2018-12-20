@@ -155,7 +155,31 @@ namespace Slack.Json.Tests
         {
             ActionTestBuilder<VulnerabilityAlertAction>
                 .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
-                .ExecuteWith("vulnerabilityAlert.json", slackChannels: "#general")
+                .ExecuteWith("vulnerabilityAlert.create.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "repository_vulnerability_alert", requestAction: "create")
+                .AssertSlackJsonTypeIs("repository_vulnerability_alert")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenVulnerabilityAlertIsDismissed_ThenSendMessage()
+        {
+            ActionTestBuilder<VulnerabilityAlertAction>
+                .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
+                .ExecuteWith("vulnerabilityAlert.dismiss.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "repository_vulnerability_alert", requestAction: "create")
+                .AssertSlackJsonTypeIs("repository_vulnerability_alert")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenVulnerabilityAlertIsResolved_ThenSendMessage()
+        {
+            ActionTestBuilder<VulnerabilityAlertAction>
+                .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
+                .ExecuteWith("vulnerabilityAlert.resolve.json", slackChannels: "#general")
                 .AssertInvokedOn(requestType: "repository_vulnerability_alert", requestAction: "create")
                 .AssertSlackJsonTypeIs("repository_vulnerability_alert")
                 .Assert(slack =>
