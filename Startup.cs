@@ -46,16 +46,8 @@ namespace Slack.Json
 
             services.AddTransient<ISlackMessaging, SlackMessaging>();
             services.AddTransient<ISlackActionFetcher, SlackActionFetcher>();
-            services.AddTransient<PullRequestAction>();
-            services.AddTransient<ReviewRequestAction>();
-            services.AddTransient<NewReleaseAction>();
-            services.AddTransient<ReviewStatusAction>();
-            services.AddTransient<NewRepoAction>();
-            services.AddTransient<NewIssueAction>();
-            services.AddTransient<NewLabelPullRequestAction>();
-            services.AddTransient<NewLabelOnIssueAction>();
-            services.AddTransient<JenkinsBuildFailAction>();
-            services.AddTransient<JenkinsTagBuildAction>();
+
+            ActionFactory.AddActionFactoryServicesToDi(serviceCollection: services);
 
             services.AddTransient<ActionFactory>();
         }
