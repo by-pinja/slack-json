@@ -9,7 +9,7 @@ podTemplate(label: pod.label,
 
     node(pod.label) {
         stage('Checkout') {
-            checkout_with_tags()
+            checkout scm
         }
         container('dotnet') {
             stage('Build') {
