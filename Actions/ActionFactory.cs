@@ -43,10 +43,5 @@ namespace Slack.Json.Actions
         {
             return actions.Where(x => x.GithubHookEventName == githubHookEventName);
         }
-
-        private IRequestAction GetRequestAction<T>(IServiceProvider serviceProvider)
-        {
-            return (IRequestAction)serviceProvider.GetService(typeof(T)) ?? throw new InvalidOperationException($"Could not find action of type '{typeof(T)}' from DI.");
-        }
     }
 }
