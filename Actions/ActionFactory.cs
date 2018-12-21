@@ -22,7 +22,8 @@ namespace Slack.Json.Actions
                 (IRequestAction)services.GetService(typeof(NewReleaseAction)),
                 (IRequestAction)services.GetService(typeof(NewLabelPullRequestAction)),
                 (IRequestAction)services.GetService(typeof(NewLabelOnIssueAction)),
-                (IRequestAction)services.GetService(typeof(JenkinsBuildFailAction))
+                (IRequestAction)services.GetService(typeof(JenkinsBuildFailAction)),
+                (IRequestAction)services.GetService(typeof(JenkinsTagBuildAction))
             };
         }
 
