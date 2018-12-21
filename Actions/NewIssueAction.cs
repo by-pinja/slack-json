@@ -11,7 +11,6 @@ namespace Slack.Json.Actions
     public class NewIssueAction : IRequestAction
     {
         public string GithubHookEventName => "issues";
-        public string GithubHookActionField => "opened";
         public string SlackJsonType => "new_issue";
 
         private ISlackMessaging slack;
@@ -25,6 +24,9 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "opened")
+                return;
+
             var issueHtmlUrl = request.Get(x => x.issue.html_url);
             var opener = request.Get(x => x.issue.user.login);
             var issueBody = request.Get(x => x.issue.body);

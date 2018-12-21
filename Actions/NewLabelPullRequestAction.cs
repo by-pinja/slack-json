@@ -11,7 +11,6 @@ namespace Slack.Json.Actions
     public class NewLabelPullRequestAction : IRequestAction
     {
         public string GithubHookEventName => "pull_request";
-        public string GithubHookActionField => "labeled";
         public string SlackJsonType => "pullrequest_label";
 
         private ISlackMessaging slack;
@@ -25,6 +24,9 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "labeled")
+                return;
+
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
             var label = request.Get(x => x.label.name);
 

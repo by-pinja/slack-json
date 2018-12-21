@@ -11,7 +11,6 @@ namespace Slack.Json.Actions
     public class NewReleaseAction : IRequestAction
     {
         public string GithubHookEventName => "release";
-        public string GithubHookActionField => "published";
         public string SlackJsonType => "new_release";
 
         private readonly ISlackMessaging slack;
@@ -25,6 +24,9 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "published")
+                return;
+
             var issueHtmlUrl = request.Get(x => x.release.html_url);
             var author = request.Get(x => x.release.author.login);
             var issueBody = request.Get(x => x.release.body);

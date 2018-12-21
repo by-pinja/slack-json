@@ -21,11 +21,13 @@ namespace Slack.Json.Actions
         }
 
         public string GithubHookEventName => "pull_request";
-        public string GithubHookActionField => "review_requested";
         public string SlackJsonType => "review_request";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "review_requested")
+                return;
+
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
             var reviewers = request.Get<JArray>(x => x.pull_request.requested_reviewers)

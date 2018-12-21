@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Slack.Json.Github;
 using Slack.Json.Slack;
+using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
@@ -20,11 +21,13 @@ namespace Slack.Json.Actions
         }
 
         public string GithubHookEventName => "pull_request";
-        public string GithubHookActionField => "opened";
         public string SlackJsonType => "pull_request";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "opened")
+                return;
+
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
             actions

@@ -21,11 +21,13 @@ namespace Slack.Json.Actions
         }
 
         public string GithubHookEventName => "repository";
-        public string GithubHookActionField => "created";
         public string SlackJsonType => "new_repository";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "created")
+                return;
+
             var fullName = request.Get(x => x.repository.full_name);
             var repoHtmlUrl = request.Get(x => x.repository.html_url);
 

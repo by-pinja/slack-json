@@ -17,7 +17,7 @@ namespace Slack.Json.Tests
             ActionTestBuilder<NewIssueAction>
                 .Create((slack, logger) => new NewIssueAction(slack, logger))
                 .ExecuteWith("newIssue.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "issues", requestAction: "opened")
+                .AssertInvokedOn(requestType: "issues")
                 .AssertSlackJsonTypeIs("new_issue")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
@@ -30,7 +30,7 @@ namespace Slack.Json.Tests
                 .Create((slack, logger) => new NewRepoAction(slack, logger))
                 .ExecuteWith("createPublicRepo.json", slackChannels: "#general")
                 .AssertSlackJsonTypeIs("new_repository")
-                .AssertInvokedOn(requestType: "repository", requestAction: "created")
+                .AssertInvokedOn(requestType: "repository")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
@@ -42,7 +42,7 @@ namespace Slack.Json.Tests
                 .Create((slack, logger) => new NewReleaseAction(slack, logger))
                 .ExecuteWith("newRelease.json", slackChannels: "#general")
                 .AssertSlackJsonTypeIs("new_release")
-                .AssertInvokedOn(requestType: "release", requestAction: "published")
+                .AssertInvokedOn(requestType: "release")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
@@ -54,7 +54,7 @@ namespace Slack.Json.Tests
                 .Create((slack, logger) => new PullRequestAction(slack, logger))
                 .ExecuteWith("pullRequest.json", slackChannels: "#general")
                 .AssertSlackJsonTypeIs("pull_request")
-                .AssertInvokedOn(requestType: "pull_request", requestAction: "opened")
+                .AssertInvokedOn(requestType: "pull_request")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
@@ -65,7 +65,7 @@ namespace Slack.Json.Tests
             ActionTestBuilder<ReviewRequestAction>
                 .Create((slack, logger) => new ReviewRequestAction(slack, logger))
                 .ExecuteWith("reviewRequest.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "pull_request", requestAction: "review_requested")
+                .AssertInvokedOn(requestType: "pull_request")
                 .AssertSlackJsonTypeIs("review_request")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
@@ -77,7 +77,7 @@ namespace Slack.Json.Tests
             ActionTestBuilder<ReviewStatusAction>
                 .Create((slack, logger) => new ReviewStatusAction(slack, logger))
                 .ExecuteWith("reviewSubmit.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "pull_request_review", requestAction: "submitted")
+                .AssertInvokedOn(requestType: "pull_request_review")
                 .AssertSlackJsonTypeIs("review_status")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
@@ -89,7 +89,7 @@ namespace Slack.Json.Tests
             ActionTestBuilder<NewLabelOnIssueAction>
                 .Create((slack, logger) => new NewLabelOnIssueAction(slack, logger))
                 .ExecuteWith("newLabelOnIssue.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "issues", requestAction: "labeled")
+                .AssertInvokedOn(requestType: "issues")
                 .AssertSlackJsonTypeIs("issue_label")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
@@ -117,7 +117,7 @@ namespace Slack.Json.Tests
             ActionTestBuilder<NewLabelPullRequestAction>
                 .Create((slack, logger) => new NewLabelPullRequestAction(slack, logger))
                 .ExecuteWith("pullRequestLabeled.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "pull_request", requestAction: "labeled")
+                .AssertInvokedOn(requestType: "pull_request")
                 .AssertSlackJsonTypeIs("pullrequest_label")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
@@ -145,20 +145,44 @@ namespace Slack.Json.Tests
             ActionTestBuilder<JenkinsBuildFailAction>
                 .Create((slack, logger) => new JenkinsBuildFailAction(slack, logger))
                 .ExecuteWith("jenkinsBuildFailure.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "status", requestAction: "")
+                .AssertInvokedOn(requestType: "status")
                 .AssertSlackJsonTypeIs("jenkins_build_error")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }
 
         [Fact]
-        public void WhenJenkinsTagBuildIsSuccess_ThenSendmessage()
+        public void WhenSecurityVulnerabilityIsFound_ThenSendMessage()
         {
-            ActionTestBuilder<JenkinsTagBuildAction>
-                .Create((slack, logger) => new JenkinsTagBuildAction(slack, logger, Options.Create(new AppOptions { TagBuildUrlContains = "tag" })))
-                .ExecuteWith("jenkinsTagBuildSuccess.json", slackChannels: "#general")
-                .AssertInvokedOn(requestType: "status", requestAction: "")
-                .AssertSlackJsonTypeIs("jenkins_build_tag")
+            ActionTestBuilder<VulnerabilityAlertAction>
+                .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
+                .ExecuteWith("vulnerabilityAlert.create.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "repository_vulnerability_alert")
+                .AssertSlackJsonTypeIs("repository_vulnerability_alert")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenVulnerabilityAlertIsDismissed_ThenSendMessage()
+        {
+            ActionTestBuilder<VulnerabilityAlertAction>
+                .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
+                .ExecuteWith("vulnerabilityAlert.dismiss.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "repository_vulnerability_alert")
+                .AssertSlackJsonTypeIs("repository_vulnerability_alert")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenVulnerabilityAlertIsResolved_ThenSendMessage()
+        {
+            ActionTestBuilder<VulnerabilityAlertAction>
+                .Create((slack, logger) => new VulnerabilityAlertAction(slack, logger))
+                .ExecuteWith("vulnerabilityAlert.resolve.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "repository_vulnerability_alert")
+                .AssertSlackJsonTypeIs("repository_vulnerability_alert")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
         }

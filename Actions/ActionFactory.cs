@@ -17,6 +17,7 @@ namespace Slack.Json.Actions
                 (IRequestAction)services.GetService(typeof(ReviewRequestAction)),
                 (IRequestAction)services.GetService(typeof(ReviewStatusAction)),
                 (IRequestAction)services.GetService(typeof(NewRepoAction)),
+                (IRequestAction)services.GetService(typeof(VulnerabilityAlertAction)),
                 (IRequestAction)services.GetService(typeof(NewIssueAction)),
                 (IRequestAction)services.GetService(typeof(NewReleaseAction)),
                 (IRequestAction)services.GetService(typeof(NewLabelPullRequestAction)),
@@ -28,7 +29,7 @@ namespace Slack.Json.Actions
 
         public IEnumerable<IRequestAction> Resolve(string githubHookEventName, string actionFieldFromEvent)
         {
-            return actions.Where(x => x.GithubHookEventName == githubHookEventName && x.GithubHookActionField == actionFieldFromEvent);
+            return actions.Where(x => x.GithubHookEventName == githubHookEventName);
         }
     }
 }

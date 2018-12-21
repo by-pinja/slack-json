@@ -56,10 +56,9 @@ namespace Slack.Json.Tests
             return this;
         }
 
-        public ActionTestBuilder<T> AssertInvokedOn(string requestType, string requestAction)
+        public ActionTestBuilder<T> AssertInvokedOn(string requestType)
         {
             this.action.GithubHookEventName.Should().Be(requestType);
-            this.action.GithubHookActionField.Should().Be(requestAction);
             return this;
         }
 
