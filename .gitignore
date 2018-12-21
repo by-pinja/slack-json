@@ -289,3 +289,5 @@ __pycache__/
 
 appsettings.localdev.json
 LocalDevEnvVars.ps1
+
+out

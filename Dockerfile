@@ -1,4 +1,4 @@
-FROM microsoft/aspnetcore:2.2
+FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine
 
 WORKDIR /app
 COPY out .
