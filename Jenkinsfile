@@ -1,11 +1,11 @@
-library 'jenkins-ptcs-library@docker-depencies'
+library 'jenkins-ptcs-library@0.3.0'
 
 podTemplate(label: pod.label,
   containers: pod.templates + [
     containerTemplate(name: 'dotnet', image: 'microsoft/dotnet:2.2-sdk', ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
   ]
 ) {
-    def branch = (env.BRANCH_NAME)
+    def project = "slack-json"
 
     node(pod.label) {
         stage('Checkout') {
@@ -24,22 +24,11 @@ podTemplate(label: pod.label,
             }
         }
         stage('Package') {
-            container('docker') {
-                sh """
-                    docker build -t ptcos/slack-json:latest .
-                """
-
-                if(env.GIT_TAG_NAME && env.GIT_TAG_NAME != "null") {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        def image = docker.image("ptcos/slack-json")
-                        image.push("latest")
-                        image.push(env.GIT_TAG_NAME)
-                    }
-                }
-            }
+            publishContainerToGcr(project);
+            publishTagToDockerhub(project);
         }
         stage('apply') {
-            if(branch == "master")
+            if(env.BRANCH_NAME == "master")
             {
                 toK8sTestEnv() {
                     sh """
