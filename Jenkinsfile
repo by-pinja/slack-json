@@ -2,7 +2,7 @@ library 'jenkins-ptcs-library@docker-depencies'
 
 podTemplate(label: pod.label,
   containers: pod.templates + [
-    containerTemplate(name: 'dotnet', image: 'microsoft/aspnetcore-build:2.2', ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
+    containerTemplate(name: 'dotnet', image: 'microsoft/dotnet:2.2-sdk', ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
   ]
 ) {
     def branch = (env.BRANCH_NAME)
