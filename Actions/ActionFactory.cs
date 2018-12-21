@@ -28,7 +28,7 @@ namespace Slack.Json.Actions
 
         public IEnumerable<IRequestAction> Resolve(string githubHookEventName, string actionFieldFromEvent)
         {
-            return actions.Where(x => x.GithubHookEventName == githubHookEventName && x.GithubHookActionField == actionFieldFromEvent);
+            return actions.Where(x => x.GithubHookEventName == githubHookEventName);
         }
     }
 }

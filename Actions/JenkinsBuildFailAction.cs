@@ -20,9 +20,6 @@ namespace Slack.Json.Actions
         }
 
         public string GithubHookEventName => "status";
-
-        public string GithubHookActionField => "";
-
         public string SlackJsonType => "jenkins_build_error";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)

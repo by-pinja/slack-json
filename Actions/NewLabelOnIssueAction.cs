@@ -20,12 +20,13 @@ namespace Slack.Json.Actions
         }
 
         public string GithubHookEventName => "issues";
-        public string GithubHookActionField => "labeled";
-
         public string SlackJsonType => "issue_label";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
+            if(request.Get<string>(x => x.action) != "labeled")
+                return;
+
             var label = request.Get(x => x.label.name);
             var issueHtmlUrl = request.Get(x => x.issue.html_url);
             var title = request.Get(x => x.issue.title);
