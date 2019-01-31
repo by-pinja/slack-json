@@ -30,7 +30,7 @@ docker run -it \
 
 ## Slack configuration
 
-1. Create new 'Incoming webhook' app and set 'Webhook URL' to appsettings.json or environment variable `SlackIntegrationUri`.
+1. Create new ['Incoming webhook' app](https://slack.com/apps/A0F7XDUAZ-incoming-webhooks) and set 'Webhook URL' to appsettings.json or environment variable `SlackIntegrationUri`.
 
 ## slack.json
 
