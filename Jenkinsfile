@@ -27,15 +27,5 @@ podTemplate(label: pod.label,
             publishContainerToGcr(project);
             publishTagToDockerhub(project);
         }
-        stage('apply') {
-            if(env.BRANCH_NAME == "master")
-            {
-                toK8sTestEnv() {
-                    sh """
-                        kubectl apply -f ./k8s/master.yaml
-                    """
-                }
-            }
-        }
     }
   }
