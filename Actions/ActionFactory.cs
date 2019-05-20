@@ -12,6 +12,7 @@ namespace Slack.Json.Actions
 
         private static readonly IEnumerable<Type> actionTypes = new [] {
             typeof(PullRequestAction),
+            typeof(PullRequestForReviewAction),
             typeof(ReviewRequestAction),
             typeof(ReviewStatusAction),
             typeof(NewRepoAction),

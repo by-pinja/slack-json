@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -9,14 +8,15 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class PullRequestAction : IRequestAction
+    public class PullRequestForReviewAction : IRequestAction
     {
         public string GithubHookEventName => "pull_request";
         public string SlackJsonType => "pull_request";
-        private readonly ISlackMessaging slack;
-        private readonly ILogger<PullRequestAction> logger;
 
-        public PullRequestAction(ISlackMessaging slack, ILogger<PullRequestAction> logger)
+        private ISlackMessaging slack;
+        private ILogger<NewLabelPullRequestAction> logger;
+
+        public PullRequestForReviewAction(ISlackMessaging slack, ILogger<NewLabelPullRequestAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -24,14 +24,10 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "opened")
+            if(request.Get<string>(x => x.action) != "ready_for_review")
                 return;
-            
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
-            var draft = request.Get(x => x.pull_request.draft);
-            var draftText = draft == "True" ? "draft " : "";
-            var color = draft == "True" ? "#7a7a7a" : "warning";
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
             actions
                 .ToList()
@@ -39,9 +35,9 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New {draftText}pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"Pull request '{prTitle}' is ready for review", prHtmlUrl)
                         {
-                            Color = color
+                            Color = "#439FE0"
                         });
                 });
         }
