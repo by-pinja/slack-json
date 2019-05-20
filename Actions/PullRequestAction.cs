@@ -25,22 +25,45 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "opened")
-                return;
+            var _action = request.Get<string>(x => x.action);
+            if (_action != null) {
+                ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+                switch(_action) {
+                    case "opened": {
+                        var draft = request.Get(x => x.pull_request.draft);
+                        var draftText = draft == "True" ? "draft " : "";
+                        var color = draft == "True" ? "#7a7a7a" : "warning";
 
-            actions
-                .ToList()
-                .ForEach(action =>
-                {
-                    this.logger.LogInformation($"Sending message to '{action.Channel}'");
-                    this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New pull request '{prTitle}'", prHtmlUrl)
-                        {
-                            Color = "warning"
-                        });
-                });
+                        actions
+                            .ToList()
+                            .ForEach(action =>
+                            {
+                                this.logger.LogInformation($"Sending message to '{action.Channel}'");
+                                this.slack.Send(action.Channel,
+                                    new SlackMessageModel($"New {draftText}pull request '{prTitle}'", prHtmlUrl)
+                                    {
+                                        Color = color
+                                    });
+                            });
+                        
+                    }break;
+                    case "ready_for_review": {
+                        actions
+                            .ToList()
+                            .ForEach(action =>
+                            {
+                                this.logger.LogInformation($"Sending message to '{action.Channel}'");
+                                this.slack.Send(action.Channel,
+                                    new SlackMessageModel($"Pull request '{prTitle}' is ready for review", prHtmlUrl)
+                                    {
+                                        Color = "#439FE0"
+                                    });
+                            });
+                    }break;
+                    default: { return; }
+                }
+            } 
         }
     }
 }
