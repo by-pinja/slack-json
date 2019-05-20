@@ -10,13 +10,14 @@ namespace Slack.Json.Actions
 {
     public class PullRequestForReviewAction : IRequestAction
     {
+        /* Draft pull request ready for review (draft --> real pr)*/
         public string GithubHookEventName => "pull_request";
         public string SlackJsonType => "pull_request";
 
         private ISlackMessaging slack;
-        private ILogger<NewLabelPullRequestAction> logger;
+        private ILogger<PullRequestForReviewAction> logger;
 
-        public PullRequestForReviewAction(ISlackMessaging slack, ILogger<NewLabelPullRequestAction> logger)
+        public PullRequestForReviewAction(ISlackMessaging slack, ILogger<PullRequestForReviewAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
