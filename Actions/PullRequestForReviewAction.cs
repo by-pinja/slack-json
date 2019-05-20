@@ -12,7 +12,7 @@ namespace Slack.Json.Actions
     {
         /* Draft pull request ready for review (draft --> real pr)*/
         public string GithubHookEventName => "pull_request";
-        public string SlackJsonType => "pull_request";
+        public string SlackJsonType => "ready_for_review";
 
         private ISlackMessaging slack;
         private ILogger<PullRequestForReviewAction> logger;
