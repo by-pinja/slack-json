@@ -10,6 +10,8 @@ namespace Slack.Json.Actions
 {
     public class NewLabelOnIssueAction : IRequestAction
     {
+        public string GithubHookEventName => "issues";
+        public string SlackJsonType => "issue_label";
         private ISlackMessaging slack;
         private ILogger<NewLabelOnIssueAction> logger;
 
@@ -18,9 +20,6 @@ namespace Slack.Json.Actions
             this.slack = slack;
             this.logger = logger;
         }
-
-        public string GithubHookEventName => "issues";
-        public string SlackJsonType => "issue_label";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {

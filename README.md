@@ -61,6 +61,7 @@ App supports globally configured actions which are invoked on every repository e
 | new_repository              | Notifies channel when new repository is created.       | This must be enabled globally, not allowed on repository basic configuration. |
 | new_release                 | Notifies channel when new release is created.          |                         |
 | pull_request                | Notifies channel about new pull requests on repository.       |                         |
+| ready_for_review            | Notifies channel when draft pull requests are ready for review. |                       |
 | review_request              | Notifies channel about new review requests on repository.     |                         |
 | review_status               | Notifies channel about updates on reviews, like reviewed or needs fix. | |
 | issue_label                 | Notifies channel about labels on issues. | Supports filtering with `data: [ "needs help", "bug" ]`, if data is not defined all labels are accepted. |

@@ -11,6 +11,8 @@ namespace Slack.Json.Actions
 {
     public class NewRepoAction : IRequestAction
     {
+        public string GithubHookEventName => "repository";
+        public string SlackJsonType => "new_repository";
         private readonly ISlackMessaging slack;
         private readonly ILogger<NewRepoAction> logger;
 
@@ -19,9 +21,6 @@ namespace Slack.Json.Actions
             this.slack = slack;
             this.logger = logger;
         }
-
-        public string GithubHookEventName => "repository";
-        public string SlackJsonType => "new_repository";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {

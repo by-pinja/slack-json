@@ -60,6 +60,18 @@ namespace Slack.Json.Tests
         }
 
         [Fact]
+        public void WhenPullRequestIsReadyForReview_ThenSendMessage()
+        {
+            ActionTestBuilder<PullRequestForReviewAction>
+                .Create((slack, logger) => new PullRequestForReviewAction(slack, logger))
+                .ExecuteWith("pullRequestForReview.json", slackChannels: "#general")
+                .AssertSlackJsonTypeIs("ready_for_review")
+                .AssertInvokedOn(requestType: "pull_request")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
         public void WhenReviewRequestIsSent_ThenSendMessage()
         {
             ActionTestBuilder<ReviewRequestAction>

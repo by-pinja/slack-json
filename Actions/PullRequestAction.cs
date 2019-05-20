@@ -11,6 +11,8 @@ namespace Slack.Json.Actions
 {
     public class PullRequestAction : IRequestAction
     {
+        public string GithubHookEventName => "pull_request";
+        public string SlackJsonType => "pull_request";
         private readonly ISlackMessaging slack;
         private readonly ILogger<PullRequestAction> logger;
 
@@ -20,15 +22,16 @@ namespace Slack.Json.Actions
             this.logger = logger;
         }
 
-        public string GithubHookEventName => "pull_request";
-        public string SlackJsonType => "pull_request";
-
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
             if(request.Get<string>(x => x.action) != "opened")
                 return;
-
+            
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+
+            var draft = request.Get(x => x.pull_request.draft);
+            var draftText = draft == "True" ? "draft " : "";
+            var color = draft == "True" ? "#7a7a7a" : "warning";
 
             actions
                 .ToList()
@@ -36,9 +39,9 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"New {draftText}pull request '{prTitle}'", prHtmlUrl)
                         {
-                            Color = "warning"
+                            Color = color
                         });
                 });
         }
