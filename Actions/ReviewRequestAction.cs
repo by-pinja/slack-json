@@ -11,9 +11,6 @@ namespace Slack.Json.Actions
 {
     public class ReviewRequestAction: IRequestAction
     {
-        public string GithubHookEventName => "pull_request";
-        public string SlackJsonType => "review_request";
-        
         private ISlackMessaging slack;
         private ILogger<ReviewRequestAction> logger;
 
@@ -22,6 +19,9 @@ namespace Slack.Json.Actions
             this.slack = slack;
             this.logger = logger;
         }
+
+        public string GithubHookEventName => "pull_request";
+        public string SlackJsonType => "review_request";
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
