@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Slack.Json.Controllers
         }
 
         [HttpPost("v1/api/github")]
-        public IActionResult IncomingGithubHook(
+        public ActionResult<IEnumerable<WebHookResult>> IncomingGithubHook(
             [FromHeader(Name = "X-GitHub-Event")][Required] string eventType,
             [FromHeader(Name = "X-GitHub-Delivery")] string deliveryId,
             [FromHeader(Name = "X-Hub-Signature")] string signature,
@@ -35,7 +36,7 @@ namespace Slack.Json.Controllers
 
             var actions = this.actionFactory.Resolve(eventType, action);
 
-            if(!actions.Any())
+            if (!actions.Any())
                 this.logger.LogInformation($"No handler for type {eventType} and action {action}");
 
             var slackActions = this.slackActions.GetSlackActions(content.Get(x => x.repository.full_name));
@@ -43,9 +44,14 @@ namespace Slack.Json.Controllers
             actions.ToList()
                 .ForEach(a => a.Execute(
                     content,
-                    slackActions.Where(s => s.Enabled && s.Type == a.SlackJsonType)));
+                    GetMatchingSlackActions(a, slackActions)));
 
-            return Ok();
+            return Ok(actions.Select(x => new WebHookResult(x, GetMatchingSlackActions(x, slackActions))));
+        }
+
+        private static IEnumerable<SlackActionModel> GetMatchingSlackActions(IRequestAction a, IEnumerable<SlackActionModel> slackActions)
+        {
+            return slackActions.Where(s => s.Enabled && s.Type == a.SlackJsonType);
         }
     }
 }

@@ -76,8 +76,7 @@ namespace Slack.Json.Tests
                 Path.GetFullPath(Path.Combine(
                     Path.GetDirectoryName(typeof(Startup).Assembly.Location), $@"../../../Tests/GithubRequestPayloads/{fileName}"));
 
-            var satelTestNetworkFile = File.ReadAllText(pathToJson);
-            return satelTestNetworkFile;
+            return File.ReadAllText(pathToJson);
         }
     }
 }
