@@ -27,11 +27,12 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "created")
                 return;
 
-            var fullName = request.Get(x => x.repository.full_name);
-            var repoHtmlUrl = request.Get(x => x.repository.html_url);
+            var fullName = request.Require(x => x.repository.full_name);
+            var repoHtmlUrl = request.Require(x => x.repository.html_url);
 
             // If you use word 'private' in dynamic expression compiler breaks up :)
-            var isIsPrivate = request.Get<JObject>(x => x.repository)["private"].Value<bool>();
+            var isIsPrivate = request.Get<JObject>(x => x.repository)?["private"]?.Value<bool>()
+                ?? throw new InvalidOperationException("Could not find expected path 'repository' from json.");
 
             var publicOrPrivateText = isIsPrivate ? "private" : "public";
 

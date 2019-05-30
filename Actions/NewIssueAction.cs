@@ -13,8 +13,8 @@ namespace Slack.Json.Actions
         public string GithubHookEventName => "issues";
         public string SlackJsonType => "new_issue";
 
-        private ISlackMessaging slack;
-        private ILogger<NewIssueAction> logger;
+        private readonly ISlackMessaging slack;
+        private readonly ILogger<NewIssueAction> logger;
 
         public NewIssueAction(ISlackMessaging slack, ILogger<NewIssueAction> logger)
         {
@@ -24,16 +24,16 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "opened")
+            if(request.Get(x => x.action) != "opened")
                 return;
 
-            var issueHtmlUrl = request.Get(x => x.issue.html_url);
-            var opener = request.Get(x => x.issue.user.login);
-            var issueBody = request.Get(x => x.issue.body);
-            var title = request.Get(x => x.issue.title);
+            var issueHtmlUrl = request.Require(x => x.issue.html_url);
+            var opener = request.Require(x => x.issue.user.login);
+            var issueBody = request.Require(x => x.issue.body);
+            var title = request.Require(x => x.issue.title);
 
-            var repo = request.Get(x => x.repository.name);
-            var owner = request.Get(x => x.repository.owner.login);
+            var repo = request.Require(x => x.repository.name);
+            var owner = request.Require(x => x.repository.owner.login);
 
             actions
                 .ToList()

@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -8,15 +9,14 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class NewLabelPullRequestAction : IRequestAction
+    public class PullRequestOpenedAction : IRequestAction
     {
         public string GithubHookEventName => "pull_request";
-        public string SlackJsonType => "pullrequest_label";
-
+        public string SlackJsonType => "pull_request";
         private readonly ISlackMessaging slack;
-        private readonly ILogger<NewLabelPullRequestAction> logger;
+        private readonly ILogger<PullRequestOpenedAction> logger;
 
-        public NewLabelPullRequestAction(ISlackMessaging slack, ILogger<NewLabelPullRequestAction> logger)
+        public PullRequestOpenedAction(ISlackMessaging slack, ILogger<PullRequestOpenedAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -24,24 +24,24 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "labeled")
+            if(request.Get(x => x.action) != "opened")
                 return;
 
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
-            var label = request.Get(x => x.label.name);
+
+            var draft = request.Get(x => x.pull_request.draft);
+            var draftText = draft == "True" ? "draft " : "";
+            var color = draft == "True" ? "#7a7a7a" : "warning";
 
             actions
-                .Where(slackJsonAction =>
-                    slackJsonAction.Data == null ||
-                    slackJsonAction.Data.Value<JArray>().Any(x => x.Value<string>() == label))
                 .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New label '{label}' on pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"New {draftText}pull request '{prTitle}'", prHtmlUrl)
                         {
-                            Color = $"#{request.Get(x => x.label.color)}"
+                            Color = color
                         });
                 });
         }

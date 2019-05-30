@@ -27,13 +27,13 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "published")
                 return;
 
-            var issueHtmlUrl = request.Get(x => x.release.html_url);
-            var author = request.Get(x => x.release.author.login);
-            var issueBody = request.Get(x => x.release.body);
-            var name = request.Get(x => x.release.name);
+            var issueHtmlUrl = request.Require(x => x.release.html_url);
+            var author = request.Require(x => x.release.author.login);
+            var issueBody = request.Require(x => x.release.body);
+            var name = request.Require(x => x.release.name);
 
-            var repo = request.Get(x => x.repository.name);
-            var owner = request.Get(x => x.repository.owner.login);
+            var repo = request.Require(x => x.repository.name);
+            var owner = request.Require(x => x.repository.owner.login);
 
             actions
                 .ToList()

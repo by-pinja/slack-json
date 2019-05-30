@@ -8,10 +8,10 @@ namespace Slack.Json.Actions
 {
     public class ActionFactory
     {
-        private IEnumerable<IRequestAction> actions;
+        private readonly IEnumerable<IRequestAction> actions;
 
         private static readonly IEnumerable<Type> actionTypes = new [] {
-            typeof(PullRequestAction),
+            typeof(PullRequestOpenedAction),
             typeof(PullRequestForReviewAction),
             typeof(ReviewRequestAction),
             typeof(ReviewStatusAction),
@@ -40,7 +40,7 @@ namespace Slack.Json.Actions
                 .ToList();
         }
 
-        public IEnumerable<IRequestAction> Resolve(string githubHookEventName, string actionFieldFromEvent)
+        public IEnumerable<IRequestAction> Resolve(string githubHookEventName, string _)
         {
             return actions.Where(x => x.GithubHookEventName == githubHookEventName);
         }

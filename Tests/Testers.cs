@@ -22,8 +22,8 @@ namespace Slack.Json.Tests
         [Fact(Skip="tester")]
         public void TesterForSlackIntegration()
         {
-            var slack = new SlackMessaging(Options.Create(new AppOptions()), Substitute.For<ILogger<SlackMessaging>>());
-            slack.Send("#jenkins", null);
+            //var slack = new SlackMessaging(Options.Create(new AppOptions()), Substitute.For<ILogger<SlackMessaging>>());
+            //slack.Send("#jenkins", null);
         }
     }
 }

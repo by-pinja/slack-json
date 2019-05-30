@@ -14,6 +14,6 @@ namespace Slack.Json
         public string TagBuildUrlContains { get; set; } = "not_set";
 
         // This applies to every repository, enabled even when slack.json is missing.
-        public IEnumerable<SlackActionModel> GlobalSlackJson { get; set; }
+        public IEnumerable<SlackActionModel> GlobalSlackJson { get; set; } = new SlackActionModel[0];
     }
 }

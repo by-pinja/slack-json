@@ -50,8 +50,8 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenPullRequestIsCreated_ThenSendMessage()
         {
-            ActionTestBuilder<PullRequestAction>
-                .Create((slack, logger) => new PullRequestAction(slack, logger))
+            ActionTestBuilder<PullRequestOpenedAction>
+                .Create((slack, logger) => new PullRequestOpenedAction(slack, logger))
                 .ExecuteWith("pullRequest.json", slackChannels: "#general")
                 .AssertSlackJsonTypeIs("pull_request")
                 .AssertInvokedOn(requestType: "pull_request")
@@ -209,6 +209,30 @@ namespace Slack.Json.Tests
                 .AssertSlackJsonTypeIs("repository_vulnerability_alert")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenPullRequestIsMerged_ThenSendMessageAboutMerging()
+        {
+            ActionTestBuilder<PullRequestClosedAction>
+                .Create((slack, logger) => new PullRequestClosedAction(slack, logger))
+                .ExecuteWith("pullRequestMerged.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "pull_request")
+                .AssertSlackJsonTypeIs("pull_request")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Color == "#6F42C1" && x.Title.Contains("merge"))));
+        }
+
+        [Fact]
+        public void WhenPullRequestIsClosedButNotMerged_ThenSendMessageAboutAction()
+        {
+            ActionTestBuilder<PullRequestClosedAction>
+                .Create((slack, logger) => new PullRequestClosedAction(slack, logger))
+                .ExecuteWith("pullRequestNotMerged.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "pull_request")
+                .AssertSlackJsonTypeIs("pull_request")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Color == "danger" && x.Title.Contains("merge"))));
         }
     }
 }

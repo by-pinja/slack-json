@@ -15,13 +15,11 @@ namespace Slack.Json.Tests
     {
         private readonly IRequestAction action;
         private readonly ISlackMessaging messaging;
-        private readonly ILogger<T> logger;
 
-        private ActionTestBuilder(IRequestAction action, ISlackMessaging messaging, ILogger<T> logger)
+        private ActionTestBuilder(IRequestAction action, ISlackMessaging messaging, ILogger<T> _)
         {
             this.action = action;
             this.messaging = messaging;
-            this.logger = logger;
         }
 
         public ActionTestBuilder<T> AssertSlackJsonTypeIs(string type)

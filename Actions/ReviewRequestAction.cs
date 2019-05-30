@@ -14,8 +14,8 @@ namespace Slack.Json.Actions
         public string GithubHookEventName => "pull_request";
         public string SlackJsonType => "review_request";
 
-        private ISlackMessaging slack;
-        private ILogger<ReviewRequestAction> logger;
+        private readonly ISlackMessaging slack;
+        private readonly ILogger<ReviewRequestAction> logger;
 
         public ReviewRequestAction(ISlackMessaging slack, ILogger<ReviewRequestAction> logger)
         {

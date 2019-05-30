@@ -25,12 +25,14 @@ namespace Slack.Json.Util.Tests
         }
 
         [Fact]
-        public void WhenInvalidLeafIsDefined_ThenThrowInvalidOperationException()
+        public void WhenInvalidLeafIsDefinedWithRequire_ThenThrowInvalidOperationException()
         {
             var obj = JObject.Parse("{ val: { varsub: 3 }}");
 
-            obj.Invoking(o => o.Get(x => x.val.varsubfoo))
+            obj.Invoking(o => o.Require(x => x.val.varsubfoo))
                 .Should().Throw<InvalidOperationException>();
+
+            obj.Get(x => x.val.varsubfoo).Should().Be(null);
         }
     }
 }
