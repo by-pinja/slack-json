@@ -30,13 +30,18 @@ namespace Slack.Json.Actions
             var fullName = request.Get(x => x.repository.full_name);
             var repoHtmlUrl = request.Get(x => x.repository.html_url);
 
+            // If you use word 'private' in dynamic expression compiler breaks up :)
+            var isIsPrivate = request.Get<JObject>(x => x.repository)["private"].Value<bool>();
+
+            var publicOrPrivateText = isIsPrivate ? "private" : "public";
+
             actions
                 .ToList()
                 .ForEach(action =>
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New repository {fullName}", repoHtmlUrl)
+                        new SlackMessageModel($"New {publicOrPrivateText} repository {fullName}", repoHtmlUrl)
                         {
                             Text = ":thumbsup: looks good or :thumbsdown:",
                             Color = "warning",

@@ -32,7 +32,7 @@ namespace Slack.Json.Tests
                 .AssertSlackJsonTypeIs("new_repository")
                 .AssertInvokedOn(requestType: "repository")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Is<SlackMessageModel>(x => x.Title.Contains("public"))));
         }
 
         [Fact]
