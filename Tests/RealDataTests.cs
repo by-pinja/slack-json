@@ -232,7 +232,7 @@ namespace Slack.Json.Tests
                 .AssertInvokedOn(requestType: "pull_request")
                 .AssertSlackJsonTypeIs("pull_request")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Color == "danger" && x.Title.Contains("merge"))));
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Color == "danger" && x.Title.Contains("closed"))));
         }
     }
 }
