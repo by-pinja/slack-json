@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -9,15 +8,16 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class ReviewRequestAction: IRequestAction
+    public class PullRequestForReviewAction : IRequestAction
     {
+        /* Draft pull request ready for review (draft --> real pr)*/
         public string GithubHookEventName => "pull_request";
-        public string SlackJsonType => "review_request";
-        
-        private ISlackMessaging slack;
-        private ILogger<ReviewRequestAction> logger;
+        public string SlackJsonType => "ready_for_review";
 
-        public ReviewRequestAction(ISlackMessaging slack, ILogger<ReviewRequestAction> logger)
+        private ISlackMessaging slack;
+        private ILogger<PullRequestForReviewAction> logger;
+
+        public PullRequestForReviewAction(ISlackMessaging slack, ILogger<PullRequestForReviewAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -25,13 +25,10 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "review_requested")
+            if(request.Get<string>(x => x.action) != "ready_for_review")
                 return;
 
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
-
-            var reviewers = request.Get<JArray>(x => x.pull_request.requested_reviewers)
-                    .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_reviewers.login"));
 
             actions
                 .ToList()
@@ -39,9 +36,9 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"Review request for pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"Pull request '{prTitle}' is ready for review", prHtmlUrl)
                         {
-                            Text = $"Review is requested from {string.Join(", ", reviewers)}"
+                            Color = "#439FE0"
                         });
                 });
         }
