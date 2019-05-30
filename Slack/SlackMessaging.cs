@@ -26,7 +26,7 @@ namespace Slack.Json.Slack
                 new
                 {
                     username = this.user,
-                    channel = channel,
+                    channel,
                     icon_emoji = model.Icon,
                     attachments = new object[]
                     {
