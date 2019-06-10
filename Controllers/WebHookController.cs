@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,6 +30,9 @@ namespace Slack.Json.Controllers
             [FromHeader(Name = "X-Hub-Signature")] string signature,
             [FromBody] JObject content)
         {
+            if(content == null)
+                return BadRequest("Expected content.");
+
             var action = content["action"]?.Value<string>() ?? "";
 
             var actions = this.actionFactory.Resolve(eventType, action);
@@ -39,7 +40,7 @@ namespace Slack.Json.Controllers
             if (!actions.Any())
                 this.logger.LogInformation($"No handler for type {eventType} and action {action}");
 
-            var slackActions = this.slackActions.GetSlackActions(content.Get(x => x.repository.full_name));
+            var slackActions = this.slackActions.GetSlackActions(content.Require(x => x.repository.full_name));
 
             actions.ToList()
                 .ForEach(a => a.Execute(

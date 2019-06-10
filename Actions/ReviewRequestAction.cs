@@ -13,9 +13,9 @@ namespace Slack.Json.Actions
     {
         public string GithubHookEventName => "pull_request";
         public string SlackJsonType => "review_request";
-        
-        private ISlackMessaging slack;
-        private ILogger<ReviewRequestAction> logger;
+
+        private readonly ISlackMessaging slack;
+        private readonly ILogger<ReviewRequestAction> logger;
 
         public ReviewRequestAction(ISlackMessaging slack, ILogger<ReviewRequestAction> logger)
         {
@@ -28,10 +28,12 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "review_requested")
                 return;
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
             var reviewers = request.Get<JArray>(x => x.pull_request.requested_reviewers)
-                    .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_reviewers.login"));
+                        .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing pull_request.requested_reviewers.login"))
+                    .Concat(request.Get<JArray>(x => x.pull_request.requested_teams)
+                        .Select(x => x["name"] ?? throw new InvalidOperationException($"Missing pull_request.requested_teams.name")));
 
             actions
                 .ToList()
@@ -39,7 +41,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"Review request for pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"Review request for pull request '{prTittle}'", prHtmlUrl)
                         {
                             Text = $"Review is requested from {string.Join(", ", reviewers)}"
                         });

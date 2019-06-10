@@ -2,13 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using Optional;
 using RestEase;
 
 namespace Slack.Json.Github
@@ -33,11 +29,11 @@ namespace Slack.Json.Github
         {
             try
             {
-                var repoInfo = GetOwnerAndRepo(repoFullName);
+                var (owner, repo) = GetOwnerAndRepo(repoFullName);
 
                 var client = RestClient.For<IGitHubApi>("https://api.github.com");
 
-                var result = client.TryGetSlackJson($"token {this.accessToken}", repoInfo.owner, repoInfo.repo).Result;
+                var result = client.TryGetSlackJson($"token {this.accessToken}", owner, repo).Result;
 
                 return result.Actions?
                     .Concat(this.globalActions ?? Enumerable.Empty<SlackActionModel>())

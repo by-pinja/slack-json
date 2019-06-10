@@ -32,7 +32,7 @@ namespace Slack.Json.Tests
                 .AssertSlackJsonTypeIs("new_repository")
                 .AssertInvokedOn(requestType: "repository")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Is<SlackMessageModel>(x => x.Title.Contains("public"))));
         }
 
         [Fact]
@@ -50,8 +50,8 @@ namespace Slack.Json.Tests
         [Fact]
         public void WhenPullRequestIsCreated_ThenSendMessage()
         {
-            ActionTestBuilder<PullRequestAction>
-                .Create((slack, logger) => new PullRequestAction(slack, logger))
+            ActionTestBuilder<PullRequestOpenedAction>
+                .Create((slack, logger) => new PullRequestOpenedAction(slack, logger))
                 .ExecuteWith("pullRequest.json", slackChannels: "#general")
                 .AssertSlackJsonTypeIs("pull_request")
                 .AssertInvokedOn(requestType: "pull_request")
@@ -80,7 +80,19 @@ namespace Slack.Json.Tests
                 .AssertInvokedOn(requestType: "pull_request")
                 .AssertSlackJsonTypeIs("review_request")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenReviewIsRequestedFromTeam_ThenSendMessageWithTeamInformation()
+        {
+            ActionTestBuilder<ReviewRequestAction>
+                .Create((slack, logger) => new ReviewRequestAction(slack, logger))
+                .ExecuteWith("review_request_from_team.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "pull_request")
+                .AssertSlackJsonTypeIs("review_request")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Text.Contains("test-team"))));
         }
 
         [Fact]
@@ -160,7 +172,7 @@ namespace Slack.Json.Tests
                 .AssertInvokedOn(requestType: "status")
                 .AssertSlackJsonTypeIs("jenkins_build_error")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Any<SlackMessageModel>()));
         }
 
         [Fact]
@@ -172,7 +184,7 @@ namespace Slack.Json.Tests
                 .AssertInvokedOn(requestType: "repository_vulnerability_alert")
                 .AssertSlackJsonTypeIs("repository_vulnerability_alert")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Any<SlackMessageModel>()));
         }
 
         [Fact]
@@ -184,7 +196,7 @@ namespace Slack.Json.Tests
                 .AssertInvokedOn(requestType: "repository_vulnerability_alert")
                 .AssertSlackJsonTypeIs("repository_vulnerability_alert")
                 .Assert(slack =>
-                    slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Any<SlackMessageModel>()));
         }
 
         [Fact]
@@ -197,6 +209,30 @@ namespace Slack.Json.Tests
                 .AssertSlackJsonTypeIs("repository_vulnerability_alert")
                 .Assert(slack =>
                     slack.Received(1).Send(Arg.Is<string>("#general"), Arg.Any<SlackMessageModel>()));
+        }
+
+        [Fact]
+        public void WhenPullRequestIsMerged_ThenSendMessageAboutMerging()
+        {
+            ActionTestBuilder<PullRequestClosedAction>
+                .Create((slack, logger) => new PullRequestClosedAction(slack, logger))
+                .ExecuteWith("pullRequestMerged.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "pull_request")
+                .AssertSlackJsonTypeIs("pull_request")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Color == "#6F42C1" && x.Title.Contains("merge"))));
+        }
+
+        [Fact]
+        public void WhenPullRequestIsClosedButNotMerged_ThenSendMessageAboutAction()
+        {
+            ActionTestBuilder<PullRequestClosedAction>
+                .Create((slack, logger) => new PullRequestClosedAction(slack, logger))
+                .ExecuteWith("pullRequestNotMerged.json", slackChannels: "#general")
+                .AssertInvokedOn(requestType: "pull_request")
+                .AssertSlackJsonTypeIs("pull_request")
+                .Assert(slack =>
+                    slack.Received(1).Send(Arg.Is("#general"), Arg.Is<SlackMessageModel>(x => x.Color == "danger" && x.Title.Contains("closed"))));
         }
     }
 }

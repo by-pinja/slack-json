@@ -30,14 +30,14 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            var context = request.Get(x => x.context);
-            var state = request.Get(x => x.state);
-            var targetUrl = request.Get(x => x.target_url);
+            var context = request.Require(x => x.context);
+            var state = request.Require(x => x.state);
+            var targetUrl = request.Require(x => x.target_url);
 
             if(!context.StartsWith("continuous-integration/jenkins") || !targetUrl.Contains(this.options.Value.TagBuildUrlContains))
                 return;
 
-            var repo = request.Get(x => x.repository.full_name);
+            var repo = request.Require(x => x.repository.full_name);
 
             actions
                 .ToList()
@@ -47,7 +47,7 @@ namespace Slack.Json.Actions
                     this.slack.Send(action.Channel,
                         new SlackMessageModel($"Building tag {repo} at state {state}", targetUrl)
                         {
-                            Text = $"{request.Get(x => x.description)}. ({request.Get(x => x.commit.author.login)}): {request.Get(x => x.commit.commit.message)}",
+                            Text = $"{request.Require(x => x.description)}. ({request.Require(x => x.commit.author.login)}): {request.Require(x => x.commit.commit.message)}",
                             Icon = ":jenkins:",
                             Color = GetStateColor(state)
                         });

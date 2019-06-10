@@ -24,14 +24,14 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            var context = request.Get(x => x.context);
-            var state = request.Get(x => x.state);
+            var context = request.Require(x => x.context);
+            var state = request.Require(x => x.state);
 
             if(!context.StartsWith("continuous-integration/jenkins") || state != "error")
                 return;
 
-            var targetUrl = request.Get(x => x.target_url);
-            var repo = request.Get(x => x.repository.full_name);
+            var targetUrl = request.Require(x => x.target_url);
+            var repo = request.Require(x => x.repository.full_name);
 
             actions
                 .ToList()

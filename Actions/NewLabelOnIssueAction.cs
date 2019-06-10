@@ -12,8 +12,8 @@ namespace Slack.Json.Actions
     {
         public string GithubHookEventName => "issues";
         public string SlackJsonType => "issue_label";
-        private ISlackMessaging slack;
-        private ILogger<NewLabelOnIssueAction> logger;
+        private readonly ISlackMessaging slack;
+        private readonly ILogger<NewLabelOnIssueAction> logger;
 
         public NewLabelOnIssueAction(ISlackMessaging slack, ILogger<NewLabelOnIssueAction> logger)
         {
@@ -23,12 +23,12 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "labeled")
+            if(request.Get(x => x.action) != "labeled")
                 return;
 
-            var label = request.Get(x => x.label.name);
-            var issueHtmlUrl = request.Get(x => x.issue.html_url);
-            var title = request.Get(x => x.issue.title);
+            var label = request.Require(x => x.label.name);
+            var issueHtmlUrl = request.Require(x => x.issue.html_url);
+            var title = request.Require(x => x.issue.title);
 
             actions
                 .Where(slackJsonAction =>
@@ -41,7 +41,7 @@ namespace Slack.Json.Actions
                     this.slack.Send(action.Channel,
                         new SlackMessageModel($"New label '{label}' on issue '{title}'", issueHtmlUrl)
                         {
-                            Color = $"#{request.Get(x => x.label.color)}"
+                            Color = $"#{request.Require(x => x.label.color)}"
                         });
                 });
         }

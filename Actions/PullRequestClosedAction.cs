@@ -9,14 +9,14 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class PullRequestAction : IRequestAction
+    public class PullRequestClosedAction : IRequestAction
     {
         public string GithubHookEventName => "pull_request";
         public string SlackJsonType => "pull_request";
         private readonly ISlackMessaging slack;
-        private readonly ILogger<PullRequestAction> logger;
+        private readonly ILogger<PullRequestClosedAction> logger;
 
-        public PullRequestAction(ISlackMessaging slack, ILogger<PullRequestAction> logger)
+        public PullRequestClosedAction(ISlackMessaging slack, ILogger<PullRequestClosedAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -24,14 +24,17 @@ namespace Slack.Json.Actions
 
         public void Execute(JObject request, IEnumerable<ISlackAction> actions)
         {
-            if(request.Get<string>(x => x.action) != "opened")
+            if(request.Get<string>(x => x.action) != "closed")
                 return;
-            
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
 
-            var draft = request.Get(x => x.pull_request.draft);
-            var draftText = draft == "True" ? "draft " : "";
-            var color = draft == "True" ? "#7a7a7a" : "warning";
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
+
+            var isMerged = !string.IsNullOrEmpty(request.Get(x => x.pull_request.merged_at));
+
+            const string gray = "#6F42C1";
+            var color = isMerged ?  gray : "danger";
+
+            var tittle = isMerged ? $"'{prTittle}' merged to '{request.Get(x => x.pull_request.@base.@ref)}'" : $"Pull request '{prTittle}' closed.";
 
             actions
                 .ToList()
@@ -39,7 +42,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New {draftText}pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel(tittle, prHtmlUrl)
                         {
                             Color = color
                         });

@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -8,15 +9,14 @@ using Slack.Json.Util;
 
 namespace Slack.Json.Actions
 {
-    public class NewIssueAction : IRequestAction
+    public class PullRequestOpenedAction : IRequestAction
     {
-        public string GithubHookEventName => "issues";
-        public string SlackJsonType => "new_issue";
-
+        public string GithubHookEventName => "pull_request";
+        public string SlackJsonType => "pull_request";
         private readonly ISlackMessaging slack;
-        private readonly ILogger<NewIssueAction> logger;
+        private readonly ILogger<PullRequestOpenedAction> logger;
 
-        public NewIssueAction(ISlackMessaging slack, ILogger<NewIssueAction> logger)
+        public PullRequestOpenedAction(ISlackMessaging slack, ILogger<PullRequestOpenedAction> logger)
         {
             this.slack = slack;
             this.logger = logger;
@@ -27,13 +27,11 @@ namespace Slack.Json.Actions
             if(request.Get(x => x.action) != "opened")
                 return;
 
-            var issueHtmlUrl = request.Require(x => x.issue.html_url);
-            var opener = request.Require(x => x.issue.user.login);
-            var issueBody = request.Require(x => x.issue.body);
-            var title = request.Require(x => x.issue.title);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
-            var repo = request.Require(x => x.repository.name);
-            var owner = request.Require(x => x.repository.owner.login);
+            var draft = request.Get(x => x.pull_request.draft);
+            var draftText = draft == "True" ? "draft " : "";
+            var color = draft == "True" ? "#7a7a7a" : "warning";
 
             actions
                 .ToList()
@@ -41,9 +39,9 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New issue '{title}' from '{opener}'", issueHtmlUrl)
+                        new SlackMessageModel($"New {draftText}pull request '{prTittle}'", prHtmlUrl)
                         {
-                            Text = issueBody
+                            Color = color
                         });
                 });
         }

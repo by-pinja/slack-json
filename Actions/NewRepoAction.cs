@@ -27,8 +27,12 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "created")
                 return;
 
-            var fullName = request.Get(x => x.repository.full_name);
-            var repoHtmlUrl = request.Get(x => x.repository.html_url);
+            var fullName = request.Require(x => x.repository.full_name);
+            var repoHtmlUrl = request.Require(x => x.repository.html_url);
+
+            var isIsPrivate = bool.Parse(request.Require(x => x.repository.@private));
+
+            var publicOrPrivateText = isIsPrivate ? "private" : "public";
 
             actions
                 .ToList()
@@ -36,7 +40,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New repository {fullName}", repoHtmlUrl)
+                        new SlackMessageModel($"New {publicOrPrivateText} repository {fullName}", repoHtmlUrl)
                         {
                             Text = ":thumbsup: looks good or :thumbsdown:",
                             Color = "warning",
