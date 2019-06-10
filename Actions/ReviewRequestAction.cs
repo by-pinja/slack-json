@@ -31,9 +31,9 @@ namespace Slack.Json.Actions
             ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
             var reviewers = request.Get<JArray>(x => x.pull_request.requested_reviewers)
-                        .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_reviewers.login"))
+                        .Select(x => x["login"] ?? throw new InvalidOperationException($"Missing pull_request.requested_reviewers.login"))
                     .Concat(request.Get<JArray>(x => x.pull_request.requested_teams)
-                        .Select(x => x["name"] ?? throw new InvalidOperationException($"Missing Missing pull_request.requested_teams.name")));
+                        .Select(x => x["name"] ?? throw new InvalidOperationException($"Missing pull_request.requested_teams.name")));
 
             actions
                 .ToList()
