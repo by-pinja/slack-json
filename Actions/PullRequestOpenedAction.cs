@@ -27,7 +27,7 @@ namespace Slack.Json.Actions
             if(request.Get(x => x.action) != "opened")
                 return;
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
             var draft = request.Get(x => x.pull_request.draft);
             var draftText = draft == "True" ? "draft " : "";
@@ -39,7 +39,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New {draftText}pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"New {draftText}pull request '{prTittle}'", prHtmlUrl)
                         {
                             Color = color
                         });

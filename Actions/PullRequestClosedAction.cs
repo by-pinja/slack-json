@@ -27,13 +27,14 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "closed")
                 return;
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
             var isMerged = !string.IsNullOrEmpty(request.Get(x => x.pull_request.merged_at));
 
-            var color = isMerged ?  "#6F42C1" : "danger";
+            const string gray = "#6F42C1";
+            var color = isMerged ?  gray : "danger";
 
-            var tittle = isMerged ? $"'{prTitle}' merged to '{request.Get(x => x.pull_request.@base.@ref)}'" : $"Pull request '{prTitle}' closed.";
+            var tittle = isMerged ? $"'{prTittle}' merged to '{request.Get(x => x.pull_request.@base.@ref)}'" : $"Pull request '{prTittle}' closed.";
 
             actions
                 .ToList()

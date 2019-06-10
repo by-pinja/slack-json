@@ -28,7 +28,7 @@ namespace Slack.Json.Actions
             if(request.Get(x => x.action) != "submitted")
                 return;
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
             var reviewState = request.Require(x => x.review.state);
             var reviewer = request.Require(x => x.review.user.login);
@@ -40,7 +40,7 @@ namespace Slack.Json.Actions
                 .ToList()
                 .ForEach(action =>
                 {
-                    this.slack.Send(action.Channel, new SlackMessageModel($"Reviewer {reviewer} {verb} changes for '{prTitle}'", prHtmlUrl)
+                    this.slack.Send(action.Channel, new SlackMessageModel($"Reviewer {reviewer} {verb} changes for '{prTittle}'", prHtmlUrl)
                     {
                         Color = color,
                         Text = reviewBody

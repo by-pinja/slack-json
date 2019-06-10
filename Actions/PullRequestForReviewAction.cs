@@ -28,7 +28,7 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "ready_for_review")
                 return;
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
 
             actions
                 .ToList()
@@ -36,7 +36,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"Pull request '{prTitle}' is ready for review", prHtmlUrl)
+                        new SlackMessageModel($"Pull request '{prTittle}' is ready for review", prHtmlUrl)
                         {
                             Color = "#439FE0"
                         });

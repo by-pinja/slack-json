@@ -27,7 +27,7 @@ namespace Slack.Json.Actions
             if(request.Get<string>(x => x.action) != "labeled")
                 return;
 
-            ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTitle);
+                ActionUtils.ParsePullRequestDefaultFields(request, out var prHtmlUrl, out var prTittle);
             var label = request.Get(x => x.label.name);
 
             actions
@@ -39,7 +39,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel($"New label '{label}' on pull request '{prTitle}'", prHtmlUrl)
+                        new SlackMessageModel($"New label '{label}' on pull request '{prTittle}'", prHtmlUrl)
                         {
                             Color = $"#{request.Get(x => x.label.color)}"
                         });
