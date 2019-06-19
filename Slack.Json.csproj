@@ -17,6 +17,7 @@
     <PackageReference Include="NSubstitute" Version="4.0.0-rc1"/>
     <PackageReference Include="RestEase" Version="1.4.7"/>
     <PackageReference Include="System.Reactive" Version="4.1.5" />
+    <PackageReference Include="Microsoft.Reactive.Testing" Version="4.1.5" />
   </ItemGroup>
 
   <ItemGroup>
