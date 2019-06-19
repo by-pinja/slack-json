@@ -10,22 +10,21 @@ using RestEase;
 
 namespace Slack.Json.Slack
 {
-
     public class SlackMessaging : ISlackMessaging
     {
         private readonly AppOptions options;
-        private readonly ISubject<(string channel, SlackMessageModel model)> messageSubject = Subject.Synchronize(new Subject<(string channel, SlackMessageModel model)>());
-        private readonly TimeSpan groupingTimeForMessages = TimeSpan.FromSeconds(15);
         private readonly string user = "GitHub";
+        private readonly MessageThrottler throttler;
 
-        public SlackMessaging(IOptions<AppOptions> options, ILogger<SlackMessaging> logger)
+        public SlackMessaging(IOptions<AppOptions> options, ILogger<SlackMessaging> logger, MessageThrottler throttler)
         {
             this.options = options.Value;
+            this.throttler = throttler;
 
             if (string.IsNullOrEmpty(this.options.SlackIntegrationUri))
                 throw new ArgumentException(nameof(this.options.SlackIntegrationUri));
 
-            ThrottleByTittle(this.messageSubject.Synchronize())
+            throttler.Messages()
                 .Subscribe(async toSend =>
                 {
                     try
@@ -41,8 +40,7 @@ namespace Slack.Json.Slack
 
         public void Send(string channel, SlackMessageModel model)
         {
-
-            messageSubject.OnNext((channel, model));
+            throttler.Emit(channel, model);
         }
 
         private async Task SendMessageToChannel(string channel, SlackMessageModel model)
@@ -68,14 +66,6 @@ namespace Slack.Json.Slack
                         }
                     }
                 });
-        }
-
-        public IObservable<(string channel, SlackMessageModel model)> ThrottleByTittle(IObservable<(string channel, SlackMessageModel model)> observable)
-        {
-            return observable.Buffer(groupingTimeForMessages)
-                .SelectMany(x =>
-                    x.GroupBy(y => y.model.Title + y.channel)
-                    .Select(y => y.Last()));
         }
     }
 }
