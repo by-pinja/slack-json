@@ -14,6 +14,7 @@ using Slack.Json.Actions;
 using Slack.Json.Slack;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
+using System.Reactive.Concurrency;
 
 namespace Slack.Json
 {
@@ -44,7 +45,8 @@ namespace Slack.Json
             services.Configure<AppOptions>(Configuration);
             services.AddMvc();
 
-            services.AddTransient<ISlackMessaging, SlackMessaging>();
+            services.AddSingleton(_ => new MessageThrottler(Scheduler.Default));
+            services.AddSingleton<ISlackMessaging, SlackMessaging>();
             services.AddTransient<ISlackActionFetcher, SlackActionFetcher>();
 
             ActionFactory.AddActionFactoryServicesToDi(serviceCollection: services);

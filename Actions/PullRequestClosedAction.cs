@@ -34,7 +34,7 @@ namespace Slack.Json.Actions
             const string gray = "#6F42C1";
             var color = isMerged ?  gray : "danger";
 
-            var tittle = isMerged ? $"'{prTittle}' merged to '{request.Get(x => x.pull_request.@base.@ref)}'" : $"Pull request '{prTittle}' closed.";
+            var title = isMerged ? $"'{prTittle}' merged to '{request.Get(x => x.pull_request.@base.@ref)}'" : $"Pull request '{prTittle}' closed.";
 
             actions
                 .ToList()
@@ -42,7 +42,7 @@ namespace Slack.Json.Actions
                 {
                     this.logger.LogInformation($"Sending message to '{action.Channel}'");
                     this.slack.Send(action.Channel,
-                        new SlackMessageModel(tittle, prHtmlUrl)
+                        new SlackMessageModel(title, prHtmlUrl)
                         {
                             Color = color
                         });
