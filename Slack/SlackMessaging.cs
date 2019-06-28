@@ -26,21 +26,21 @@ namespace Slack.Json.Slack
                 {
                     try
                     {
-                        await SendMessageToChannel(toSend.channel, toSend.model);
+                        await SendMessageToChannel(toSend.slackChannel, toSend.model);
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError($"Error occurred while tried to send message '{toSend.model.Title}' to channel '{toSend.channel}', error: {ex}");
+                        logger.LogError(ex, $"Error occurred while tried to send message '{toSend.model.Title}' to channel '{toSend.slackChannel}', error: {ex}");
                     }
                 });
         }
 
-        public void Send(string channel, SlackMessageModel model)
+        public void Send(string slackChannel, SlackMessageModel model)
         {
-            throttler.Emit(channel, model);
+            throttler.Emit(slackChannel, model);
         }
 
-        private async Task SendMessageToChannel(string channel, SlackMessageModel model)
+        private async Task SendMessageToChannel(string slackChannel, SlackMessageModel model)
         {
             var client = RestClient.For<ISlackApi>(options.SlackIntegrationUri);
 
@@ -48,7 +48,7 @@ namespace Slack.Json.Slack
                 new
                 {
                     username = user,
-                    channel,
+                    slackChannel,
                     icon_emoji = model.Icon,
                     attachments = new object[]
                     {
