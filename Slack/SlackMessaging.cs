@@ -48,7 +48,7 @@ namespace Slack.Json.Slack
                 new
                 {
                     username = user,
-                    slackChannel,
+                    channel = slackChannel,
                     icon_emoji = model.Icon,
                     attachments = new object[]
                     {

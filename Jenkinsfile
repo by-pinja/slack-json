@@ -2,7 +2,7 @@ library 'jenkins-ptcs-library@0.6.0'
 
 podTemplate(label: pod.label,
   containers: pod.templates + [
-    containerTemplate(name: 'dotnet', image: 'microsoft/dotnet:2.2-sdk', ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
+    containerTemplate(name: 'dotnet', image: 'mcr.microsoft.com/dotnet/core/sdk:2.2-alpine3.9', ttyEnabled: true, command: '/bin/sh -c', args: 'cat')
   ]
 ) {
     def project = "slack-json"
@@ -14,7 +14,7 @@ podTemplate(label: pod.label,
         container('dotnet') {
             stage('Build') {
                 sh """
-                    dotnet publish -c Release -o out
+                    dotnet build
                 """
             }
             stage('Test') {
