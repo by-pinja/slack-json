@@ -1,5 +1,6 @@
 [![Docker pulls](https://img.shields.io/docker/pulls/ptcos/slack-json.svg)](https://hub.docker.com/r/ptcos/slack-json/)
 [![Build Status](https://jenkins.protacon.cloud/buildStatus/icon?job=www.github.com/slack-json/master)](https://jenkins.protacon.cloud/job/www.github.com/job/slack-json/job/master/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # slack-integration
 
@@ -122,3 +123,6 @@ dotnet run
 Now service runs at http://0.0.0.0:5000/, setup github hooks against your public address and you should get hook messages from github in your local development environment.
 
 See swagger document at http://0.0.0.0:5000/doc
+
+## License
+[The MIT License (MIT)](LICENSE)
