@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Slack.Json.Github
 {
-    public class SlackActionModel: ISlackAction
+    public class SlackActionModel : ISlackAction
     {
         public string Type { get; set; }
         public string Channel { get; set; }
