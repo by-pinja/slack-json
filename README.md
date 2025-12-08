@@ -107,6 +107,11 @@ App supports globally configured actions which are invoked on every repository e
             "type": "pullrequest_label",
             "channel": "#evochannel",
             "data": [ "needs help" ]
+        },
+        {
+            "type": "review_status",
+            "channel": "#review_status_channel",
+            "excludeReviewers": [ "copilot" ]
         }
     ]
 }
