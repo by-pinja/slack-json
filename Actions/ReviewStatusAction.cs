@@ -40,6 +40,16 @@ namespace Slack.Json.Actions
                 .ToList()
                 .ForEach(action =>
                 {
+                    var reviewerLower = reviewer.ToLowerInvariant();
+
+                    var excludeReviewers = action.ExcludeReviewers.ToLowerInvariant();
+                    if(excludeReviewers != null && excludeReviewers.Any(x =>
+                        x.Type == JTokenType.String &&
+                        string.Equals(x.Value<string>(), reviewer, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        return;
+                    }
+
                     this.slack.Send(action.Channel, new SlackMessageModel($"Reviewer {reviewer} {verb} changes for '{prTittle}'", prHtmlUrl)
                     {
                         Color = color,
