@@ -42,10 +42,10 @@ namespace Slack.Json.Actions
                 {
                     var reviewerLower = reviewer.ToLowerInvariant();
 
-                    var excludeReviewers = action.ExcludeReviewers.ToLowerInvariant();
+                    var excludeReviewers = action.ExcludeReviewers;
                     if(excludeReviewers != null && excludeReviewers.Any(x =>
                         x.Type == JTokenType.String &&
-                        string.Equals(x.Value<string>(), reviewer, StringComparison.InvariantCultureIgnoreCase)))
+                        string.Equals(x.Value<string>(), reviewerLower, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         return;
                     }
